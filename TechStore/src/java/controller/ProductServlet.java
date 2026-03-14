@@ -1,11 +1,11 @@
 package controller;
 
 import dao.ProductDAO;
+import jakarta.servlet.*;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.WebServlet;
 import model.Product;
 
 @WebServlet("/products")
@@ -16,7 +16,19 @@ public class ProductServlet extends HttpServlet {
 
         ProductDAO dao = new ProductDAO();
 
-        List<Product> list = dao.getAllProducts();
+        String keyword = request.getParameter("keyword");
+
+        List<Product> list;
+
+        if (keyword == null || keyword.trim().equals("")) {
+
+            list = dao.getAllProducts();
+
+        } else {
+
+            list = dao.search(keyword);
+
+        }
 
         request.setAttribute("data", list);
 

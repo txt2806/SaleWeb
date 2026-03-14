@@ -5,24 +5,29 @@ import model.User;
 
 public class UserDAO extends DBContext {
 
-    public User login(String user, String pass) {
+    // LOGIN
+    public User login(String username, String password) {
 
-        String sql = "SELECT * FROM users WHERE username=? AND password=?";
+        String sql = "SELECT * FROM Users WHERE username=? AND password=?";
 
         try {
 
             PreparedStatement st = connection.prepareStatement(sql);
-            st.setString(1, user);
-            st.setString(2, pass);
+
+            st.setString(1, username);
+            st.setString(2, password);
 
             ResultSet rs = st.executeQuery();
 
             if (rs.next()) {
-                return new User(
+
+                User u = new User(
                         rs.getInt("id"),
                         rs.getString("username"),
                         rs.getString("password")
                 );
+
+                return u;
             }
 
         } catch (Exception e) {
@@ -32,16 +37,17 @@ public class UserDAO extends DBContext {
         return null;
     }
 
-    public void register(String user, String pass) {
+    // REGISTER
+    public void register(String username, String password) {
 
-        String sql = "INSERT INTO users VALUES(?,?)";
+        String sql = "INSERT INTO Users(username,password) VALUES(?,?)";
 
         try {
 
             PreparedStatement st = connection.prepareStatement(sql);
 
-            st.setString(1, user);
-            st.setString(2, pass);
+            st.setString(1, username);
+            st.setString(2, password);
 
             st.executeUpdate();
 
@@ -50,9 +56,10 @@ public class UserDAO extends DBContext {
         }
     }
 
+    // CHECK USER EXIST
     public boolean checkUserExist(String username) {
 
-        String sql = "SELECT * FROM users WHERE username = ?";
+        String sql = "SELECT * FROM Users WHERE username=?";
 
         try {
 
@@ -72,4 +79,5 @@ public class UserDAO extends DBContext {
 
         return false;
     }
+
 }

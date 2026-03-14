@@ -1,3 +1,6 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <link rel="stylesheet" href="css/style.css">
 
 <div class="navbar">
@@ -5,12 +8,27 @@
     <div class="logo">TechStore</div>
 
     <div class="nav-links">
+
         <a href="products">Products</a>
-        <a href="login.jsp">Login</a>
-        <a href="register.jsp">Register</a>
+
+        <c:choose>
+
+            <c:when test="${sessionScope.user != null}">
+                Welcome ${sessionScope.user.username}
+                <a href="logout">Logout</a>
+            </c:when>
+
+            <c:otherwise>
+                <a href="login.jsp">Login</a>
+                <a href="register.jsp">Register</a>
+            </c:otherwise>
+
+        </c:choose>
+
     </div>
 
 </div>
+
 
 <div class="container">
 
@@ -20,6 +38,7 @@
 
 </div>
 
+
 <div class="hero">
     <div class="hero-text">
         <h1>Latest Technology</h1>
@@ -27,6 +46,7 @@
         <a href="products" class="btn">Shop Now</a>
     </div>
 </div>
+
 
 <div class="container">
 
@@ -45,6 +65,7 @@
     </div>
 
 </div>
+
 
 <div class="container">
 
@@ -70,9 +91,10 @@
 
 </div>
 
+
 <footer class="footer">
 
-    <p>� 2026 TechStore</p>
+    <p>© 2026 TechStore</p>
     <p>Contact: techstore@email.com</p>
 
 </footer>
