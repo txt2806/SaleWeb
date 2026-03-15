@@ -6,97 +6,121 @@ import model.Product;
 
 public class ProductDAO extends DBContext {
 
+    private Product mapResultSetToProduct(ResultSet rs) throws SQLException {
+        return new Product(
+                rs.getInt("id"),
+                rs.getString("name"),
+                rs.getDouble("price"),
+                rs.getString("description"),
+                rs.getString("image"),
+                rs.getInt("category_id"),
+                rs.getBoolean("is_featured")
+        );
+    }
+
     public List<Product> getAllProducts() {
-
         List<Product> list = new ArrayList<>();
-
-        String sql = "SELECT * FROM Products";
-
         try {
-
-            PreparedStatement st = connection.prepareStatement(sql);
+            PreparedStatement st = connection.prepareStatement("SELECT * FROM Products");
             ResultSet rs = st.executeQuery();
-
             while (rs.next()) {
-
-                Product p = new Product(
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getDouble("price"),
-                        rs.getString("description"),
-                        rs.getString("image")
-                );
-
-                list.add(p);
+                list.add(mapResultSetToProduct(rs));
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return list;
+    }
 
+    public List<Product> getFeaturedProducts() {
+        List<Product> list = new ArrayList<>();
+        try {
+            PreparedStatement st = connection.prepareStatement("SELECT * FROM Products WHERE is_featured = 1");
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                list.add(mapResultSetToProduct(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<Product> getProductsByCategory(int categoryId) {
+        List<Product> list = new ArrayList<>();
+        try {
+            PreparedStatement st = connection.prepareStatement("SELECT * FROM Products WHERE category_id = ?");
+            st.setInt(1, categoryId);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                list.add(mapResultSetToProduct(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return list;
     }
 
     public List<Product> search(String keyword) {
-
         List<Product> list = new ArrayList<>();
-
-        String sql = "SELECT * FROM Products WHERE name LIKE ?";
-
         try {
-
-            PreparedStatement st = connection.prepareStatement(sql);
-
+            PreparedStatement st = connection.prepareStatement("SELECT * FROM Products WHERE name LIKE ?");
             st.setString(1, "%" + keyword + "%");
-
             ResultSet rs = st.executeQuery();
-
             while (rs.next()) {
-
-                Product p = new Product(
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getDouble("price"),
-                        rs.getString("description"),
-                        rs.getString("image")
-                );
-
-                list.add(p);
+                list.add(mapResultSetToProduct(rs));
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return list;
     }
 
     public Product getProductById(int id) {
-
-        String sql = "SELECT * FROM Products WHERE id=?";
-
         try {
-
-            PreparedStatement st = connection.prepareStatement(sql);
+            PreparedStatement st = connection.prepareStatement("SELECT * FROM Products WHERE id=?");
             st.setInt(1, id);
-
             ResultSet rs = st.executeQuery();
-
             if (rs.next()) {
-
-                return new Product(
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getDouble("price"),
-                        rs.getString("description"),
-                        rs.getString("image")
-                );
+                return mapResultSetToProduct(rs);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return null;
+    }
+
+    // ==== ADMIN FUNCTIONS ====
+    public void addProduct(Product p) {
+        String sql = "INSERT INTO Products(name, price, description, image, category_id, is_featured) VALUES(?,?,?,?,?,?)";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, p.getName());
+            st.setDouble(2, p.getPrice());
+            st.setString(3, p.getDescription());
+            st.setString(4, p.getImage());
+            st.setInt(5, p.getCategoryId());
+            st.setBoolean(6, p.isFeatured());
+            st.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateProduct(Product p) {
+        String sql = "UPDATE Products SET name=?, price=?, description=?, image=?, category_id=?, is_featured=? WHERE id=?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, p.getName());
+            st.setDouble(2, p.getPrice());
+            st.setString(3, p.getDescription());
+            st.setString(4, p.getImage());
+            st.setInt(5, p.getCategoryId());
+            st.setBoolean(6, p.isFeatured());
+            st.setInt(7, p.getId());
+            st.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

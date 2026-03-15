@@ -9,8 +9,12 @@ body {
     background: #f5f7fb;
 }
 
-/* NAVBAR */
+img {
+    max-width: 100%;
+    height: auto;
+}
 
+/* NAVBAR */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -37,7 +41,6 @@ body {
 }
 
 /* CONTAINER */
-
 .container {
     width: 85%;
     margin: auto;
@@ -45,14 +48,13 @@ body {
 }
 
 /* TITLE */
-
 .title {
     font-size: 28px;
     margin-bottom: 25px;
+    text-align: center;
 }
 
 /* PRODUCT GRID */
-
 .product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -60,12 +62,11 @@ body {
 }
 
 /* PRODUCT CARD */
-
 .product-card {
     background: white;
     border-radius: 10px;
     padding: 20px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     text-align: center;
     transition: 0.3s;
 }
@@ -92,7 +93,6 @@ body {
 }
 
 /* BUTTON */
-
 .btn {
     display: inline-block;
     margin-top: 10px;
@@ -109,14 +109,13 @@ body {
 }
 
 /* FORM */
-
 .form-box {
     width: 350px;
     margin: 60px auto;
     background: white;
     padding: 30px;
     border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
 .form-box h2 {
@@ -136,13 +135,15 @@ body {
     width: 100%;
 }
 
+/* HERO */
 .hero {
     height: 350px;
     background: linear-gradient(120deg, #2563eb, #1e3a8a);
     color: white;
     display: flex;
     align-items: center;
-    padding-left: 80px;
+    justify-content: center;
+    text-align: center;
 }
 
 .hero h1 {
@@ -160,6 +161,7 @@ body {
     padding: 10px 20px;
 }
 
+/* CATEGORY */
 .category {
     display: flex;
     gap: 20px;
@@ -171,7 +173,7 @@ body {
     padding: 25px;
     text-align: center;
     border-radius: 10px;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
     font-size: 18px;
     text-decoration: none;
     color: black;
@@ -183,6 +185,7 @@ body {
     background: #f1f5f9;
 }
 
+/* FOOTER */
 .footer {
     margin-top: 80px;
     background: #111827;
@@ -191,3 +194,239 @@ body {
     padding: 20px;
 }
 
+
+/* ========================================= */
+/* CART PAGE CSS               */
+/* ========================================= */
+
+.cart-page {
+    width: 100%;
+    max-width: 650px; /* Thu nhỏ bề ngang giống ảnh */
+    margin: 30px auto 60px auto;
+    text-align: left; /* Chuyển về căn trái theo chuẩn layout */
+}
+
+/* CART HEADER */
+.cart-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eaeaea;
+    padding-bottom: 15px;
+}
+
+.back-btn {
+    position: absolute;
+    left: 0;
+    font-size: 22px;
+    color: #333;
+    text-decoration: none;
+}
+
+.cart-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+}
+
+/* SELECT ALL ROW */
+.cart-select-all {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    font-size: 15px;
+    color: #444;
+}
+
+.cart-select-all input[type="radio"],
+.item-checkbox input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+/* CART ITEM */
+.cart-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    background: white;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    position: relative; /* Để fix icon xóa và qty box */
+}
+
+.item-checkbox {
+    margin-top: 30px; /* Căn giữa theo ảnh */
+}
+
+.cart-img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+}
+
+/* CART INFO */
+.cart-info {
+    flex: 1;
+    padding-right: 30px; /* Tránh đè lên nút xóa */
+}
+
+.cart-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.cart-price-box {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.cart-price {
+    color: #d70018; /* Màu đỏ giá */
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.cart-old-price {
+    color: #999;
+    font-size: 13px;
+    text-decoration: line-through;
+}
+
+/* NÚT XÓA (GÓC TRÊN PHẢI) */
+.cart-remove {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+.remove-btn {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.remove-btn:hover {
+    color: #d70018;
+}
+
+/* SỐ LƯỢNG (GÓC DƯỚI PHẢI) */
+.cart-qty {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #dfdfdf;
+    border-radius: 4px;
+    background: #f8f9fa;
+    overflow: hidden;
+}
+
+.qty-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 16px;
+    color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qty-btn:hover {
+    background: #e9ecef;
+}
+
+.qty-val {
+    width: 32px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 28px;
+    background: white;
+    border-left: 1px solid #dfdfdf;
+    border-right: 1px solid #dfdfdf;
+}
+
+/* SUMMARY WRAPPER (Thanh chốt dưới cùng) */
+.cart-summary-wrapper {
+    background: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 10px rgba(0,0,0,0.08);
+    margin-top: 25px;
+}
+
+.cart-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.cart-total {
+    font-size: 15px;
+    color: #333;
+}
+
+.cart-total b {
+    color: #d70018;
+    font-size: 16px;
+    margin-left: 5px;
+}
+
+/* NÚT CHECKOUT (MUA NGAY) */
+.checkout-btn {
+    background: #d70018;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.checkout-btn:hover {
+    background: #bf0015;
+}
+
+/* Nút bị vô hiệu hóa (Khi tổng tiền = 0 như trong ảnh) */
+.checkout-btn.disabled {
+    background: #c4c4cf;
+    cursor: not-allowed;
+}
+
+.checkout-btn.disabled:hover {
+    background: #c4c4cf;
+}
+
+/* EMPTY CART */
+.empty-cart {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    padding: 50px 0;
+}

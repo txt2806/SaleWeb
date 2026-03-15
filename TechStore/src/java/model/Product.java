@@ -7,18 +7,23 @@ public class Product {
     private double price;
     private String description;
     private String image;
+    private int categoryId;
+    private boolean isFeatured;
 
     public Product() {
     }
 
-    public Product(int id, String name, double price, String description, String image) {
+    public Product(int id, String name, double price, String description, String image, int categoryId, boolean isFeatured) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.description = description;
         this.image = image;
+        this.categoryId = categoryId;
+        this.isFeatured = isFeatured;
     }
 
+    // Getter & Setter
     public int getId() {
         return id;
     }
@@ -59,4 +64,19 @@ public class Product {
         this.image = image;
     }
 
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public boolean isFeatured() {
+        return isFeatured;
+    }
+
+    public void setFeatured(boolean featured) {
+        this.isFeatured = featured;
+    }
 }

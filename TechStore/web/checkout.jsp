@@ -1,5 +1,5 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 <h2>Checkout</h2>
 
 <c:set var="total" value="0"/>

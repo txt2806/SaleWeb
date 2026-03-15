@@ -1,46 +1,103 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<h2>Your Cart</h2>
+<link rel="stylesheet" href="css/style.css">
+<%@include file="header.jsp"%>
 
-<table border="1">
+<div class="cart-page">
 
-    <tr>
-        <th>Product</th>
-        <th>Price</th>
-        <th>Quantity</th>
-        <th>Total</th>
-    </tr>
+    <div class="cart-header">
+        <a href="javascript:history.back()" class="back-btn">&#8592;</a>
+        <h2 class="cart-title">Giỏ hàng của bạn</h2>
+    </div>
 
-    <c:set var="total" value="0"/>
+    <c:choose>
 
-    <c:forEach items="${sessionScope.cart}" var="c">
+        <c:when test="${empty sessionScope.cart}">
+            <div class="empty-cart">
+                <img src="https://cdn-icons-png.flaticon.com/512/2038/2038854.png" width="120">
+                <p>Giỏ hàng của bạn đang trống</p>
+                <a href="products">
+                    <button class="btn">Quay lại mua sắm</button>
+                </a>
+            </div>
+        </c:when>
 
-        <tr>
+        <c:otherwise>
+            <c:set var="total" value="0"/>
 
-            <td>${c.product.name}</td>
+            <div class="cart-select-all">
+                <input type="radio" id="selectAll">
+                <label for="selectAll">Chọn tất cả</label>
+            </div>
 
-            <td>$${c.product.price}</td>
+            <div class="cart-list">
+                <c:forEach items="${sessionScope.cart}" var="item">
+                    <div class="cart-item">
 
-            <td>${c.quantity}</td>
+                        <div class="item-checkbox">
+                            <input type="radio" name="selectedItem">
+                        </div>
 
-            <td>$${c.total}</td>
+                        <img class="cart-img"
+                             src="https://cdn-icons-png.flaticon.com/512/1041/1041372.png">
 
-        </tr>
+                        <div class="cart-info">
+                            <div class="cart-name">
+                                ${item.product.name}
+                            </div>
+                            <div class="cart-price-box">
+                                <span class="cart-price">${item.product.price}đ</span>
+                            </div>
+                        </div>
 
-        <c:set var="total" value="${total + c.total}"/>
+                        <div class="cart-remove">
+                            <form action="cart" method="post" style="margin: 0;">
+                                <input type="hidden" name="action" value="remove">
+                                <input type="hidden" name="id" value="${item.product.id}">
+                                <button class="remove-btn">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></svg>
+                                </button>
+                            </form>
+                        </div>
 
-    </c:forEach>
+                        <div class="cart-qty">
+                            <form action="cart" method="post" style="margin: 0; display: flex;">
+                                <input type="hidden" name="action" value="decrease">
+                                <input type="hidden" name="id" value="${item.product.id}">
+                                <button class="qty-btn">-</button>
+                            </form>
 
-</table>
+                            <span class="qty-val">${item.quantity}</span>
 
-<h3>Total: $${total}</h3>
+                            <form action="cart" method="post" style="margin: 0; display: flex;">
+                                <input type="hidden" name="action" value="increase">
+                                <input type="hidden" name="id" value="${item.product.id}">
+                                <button class="qty-btn">+</button>
+                            </form>
+                        </div>
 
-<br>
+                    </div>
+                    <c:set var="total" value="${total + (item.product.price * item.quantity)}"/>
+                </c:forEach>
+            </div>
 
-<a href="products">
-    <button>Continue Shopping</button>
-</a>
+            <div class="cart-summary-wrapper">
+                <div class="cart-summary">
+                    <div class="cart-total">
+                        Tạm tính: <b>${total}đ</b>
+                    </div>
+                    <a href="checkout" style="text-decoration: none;">
+                        <button class="checkout-btn ${total == 0 ? 'disabled' : ''}">
+                            Mua ngay
+                        </button>
+                    </a>
+                </div>
+            </div>
 
-<a href="checkout.jsp">
-    <button>Checkout</button>
-</a>
+        </c:otherwise>
+    </c:choose>
+
+</div>
+
+<%@include file="footer.jsp"%>
