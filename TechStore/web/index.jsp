@@ -1,82 +1,64 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Trang chủ - TechStore</title>
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body>
 
-<%@include file="header.jsp"%>
+        <%@include file="header.jsp"%>
 
-<div class="container">
-
-    <h1 class="title">Welcome to TechStore</h1>
-
-    <p>Best place to buy technology products.</p>
-
-</div>
-
-
-<div class="hero">
-
-    <div class="hero-text">
-
-        <h1>Latest Technology</h1>
-
-        <p>Discover the best laptops, keyboards and gaming gear.</p>
-
-        <a href="products" class="btn">Shop Now</a>
-
-    </div>
-
-</div>
-
-
-<div class="container">
-
-    <h2 class="title">Categories</h2>
-
-    <div class="category">
-
-        <a href="products?category=laptop" class="cat-card">💻 Laptop</a>
-
-        <a href="products?category=keyboard" class="cat-card">⌨ Keyboard</a>
-
-        <a href="products?category=mouse" class="cat-card">🖱 Mouse</a>
-
-        <a href="products?category=monitor" class="cat-card">🖥 Monitor</a>
-
-    </div>
-
-</div>
-
-
-<div class="container">
-
-    <h2 class="title">Featured Products</h2>
-
-    <div class="product-grid">
-
-        <div class="product-card">
-
-            <img src="https://cdn-icons-png.flaticon.com/512/1041/1041372.png">
-
-            <div class="product-name">Gaming Laptop</div>
-
-            <div class="price">$1500</div>
-
-            <button class="btn">Buy Now</button>
-
+        <div class="hero">
+            <div class="container" style="display: flex; flex-direction: column; align-items: center;">
+                <h1>Bùng Nổ Công Nghệ</h1>
+                <p>Khám phá laptop, bàn phím và phụ kiện gaming đỉnh cao với giá tốt nhất.</p>
+                <a href="products" class="btn">Mua sắm ngay</a>
+            </div>
         </div>
 
-        <div class="product-card">
+        <div class="container">
+            <h2 class="title">Danh mục nổi bật</h2>
+            <div class="category">
+                <a href="products?category_id=1" class="cat-card">💻 Laptop</a>
+                <a href="products?category_id=2" class="cat-card">🖥 PC Máy Bộ</a>
+                <a href="products?category_id=3" class="cat-card">⌨ Bàn phím</a>
+                <a href="products?category_id=4" class="cat-card">🖱 Chuột</a>
+            </div>
 
-            <img src="https://cdn-icons-png.flaticon.com/512/3595/3595455.png">
+            <h2 class="title" style="margin-top: 50px;">Sản phẩm nổi bật</h2>
+            <div class="product-grid">
+                <c:choose>
+                    <c:when test="${empty featuredProducts}">
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666; width: 100%;">
+                            Đang cập nhật sản phẩm...
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <c:forEach items="${featuredProducts}" var="p">
+                            <div class="product-card">
+                                <a href="detail?id=${p.id}">
+                                    <img src="${not empty p.image ? p.image : 'https://cdn-icons-png.flaticon.com/512/1041/1041372.png'}" alt="${p.name}">
+                                </a>
+                                <h3 class="product-name">${p.name}</h3>
+                                <p class="price"><fmt:formatNumber value="${p.price}" pattern="#,###"/>đ</p>
 
-            <div class="product-name">Mechanical Keyboard</div>
-
-            <div class="price">$120</div>
-
-            <button class="btn">Buy Now</button>
-
+                                <form action="cart" method="POST" style="margin-top: auto;">
+                                    <input type="hidden" name="action" value="add">
+                                    <input type="hidden" name="id" value="${p.id}">
+                                    <button class="btn" style="width: 100%;">Mua ngay</button>
+                                </form>
+                            </div>
+                        </c:forEach>
+                    </c:otherwise>
+                </c:choose>
+            </div>
         </div>
 
-    </div>
+        <%@include file="footer.jsp"%>
 
-</div>
-
-<%@include file="footer.jsp"%>
+    </body>
+</html>

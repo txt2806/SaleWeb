@@ -4,13 +4,15 @@ public class Category {
 
     private int id;
     private String name;
+    private int parentId;
 
     public Category() {
     }
 
-    public Category(int id, String name) {
+    public Category(int id, String name, int parentId) {
         this.id = id;
         this.name = name;
+        this.parentId = parentId;
     }
 
     public int getId() {
@@ -27,5 +29,13 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(int parentId) {
+        this.parentId = parentId;
     }
 }

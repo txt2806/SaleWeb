@@ -56,8 +56,12 @@ public class CartServlet extends HttpServlet {
             }
 
             session.setAttribute("cart", cart);
-            response.sendRedirect("cart"); // Chuyển thẳng đến trang giỏ hàng
+
+            // FIX LỖI NHẢY TRANG: Trả người dùng về đúng trang họ vừa đứng thay vì bắt buộc vào giỏ hàng
+            String referer = request.getHeader("Referer");
+            response.sendRedirect(referer != null ? referer : "products");
             return;
+
         } else if ("increase".equals(action)) {
             for (CartItem item : cart) {
                 if (item.getProduct().getId() == id) {

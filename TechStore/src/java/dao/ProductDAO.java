@@ -7,6 +7,12 @@ import model.Product;
 public class ProductDAO extends DBContext {
 
     private Product mapResultSetToProduct(ResultSet rs) throws SQLException {
+        int soldQty = 0;
+        try {
+            soldQty = rs.getInt("sold_quantity");
+        } catch (Exception e) {
+        }
+
         return new Product(
                 rs.getInt("id"),
                 rs.getString("name"),
@@ -14,7 +20,8 @@ public class ProductDAO extends DBContext {
                 rs.getString("description"),
                 rs.getString("image"),
                 rs.getInt("category_id"),
-                rs.getBoolean("is_featured")
+                rs.getBoolean("is_featured"),
+                soldQty
         );
     }
 
@@ -90,9 +97,8 @@ public class ProductDAO extends DBContext {
         return null;
     }
 
-    // ==== ADMIN FUNCTIONS ====
     public void addProduct(Product p) {
-        String sql = "INSERT INTO Products(name, price, description, image, category_id, is_featured) VALUES(?,?,?,?,?,?)";
+        String sql = "INSERT INTO Products(name, price, description, image, category_id, is_featured, sold_quantity) VALUES(?,?,?,?,?,?,?)";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, p.getName());
@@ -101,6 +107,7 @@ public class ProductDAO extends DBContext {
             st.setString(4, p.getImage());
             st.setInt(5, p.getCategoryId());
             st.setBoolean(6, p.isFeatured());
+            st.setInt(7, p.getSoldQuantity());
             st.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -123,4 +130,28 @@ public class ProductDAO extends DBContext {
             e.printStackTrace();
         }
     }
+
+    public void deleteProduct(int id) {
+        String sql = "DELETE FROM Products WHERE id=?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, id);
+            st.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void toggleFeatured(int id) {
+        String sql = "UPDATE Products SET is_featured = CASE WHEN is_featured = 1 THEN 0 ELSE 1 END WHERE id = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, id);
+            st.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+ 
 }

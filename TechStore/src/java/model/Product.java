@@ -9,11 +9,12 @@ public class Product {
     private String image;
     private int categoryId;
     private boolean isFeatured;
+    private int soldQuantity;
 
     public Product() {
     }
 
-    public Product(int id, String name, double price, String description, String image, int categoryId, boolean isFeatured) {
+    public Product(int id, String name, double price, String description, String image, int categoryId, boolean isFeatured, int soldQuantity) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -21,9 +22,9 @@ public class Product {
         this.image = image;
         this.categoryId = categoryId;
         this.isFeatured = isFeatured;
+        this.soldQuantity = soldQuantity;
     }
 
-    // Getter & Setter
     public int getId() {
         return id;
     }
@@ -77,6 +78,14 @@ public class Product {
     }
 
     public void setFeatured(boolean featured) {
-        this.isFeatured = featured;
+        isFeatured = featured;
+    }
+
+    public int getSoldQuantity() {
+        return soldQuantity;
+    }
+
+    public void setSoldQuantity(int soldQuantity) {
+        this.soldQuantity = soldQuantity;
     }
 }

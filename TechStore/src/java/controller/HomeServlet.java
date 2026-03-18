@@ -10,10 +10,12 @@ import model.Product;
 
 @WebServlet("/home")
 public class HomeServlet extends HttpServlet {
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ProductDAO dao = new ProductDAO();
-        List<Product> featuredList = dao.getFeaturedProducts();
-        request.setAttribute("featuredList", featuredList);
+        List<Product> list = dao.getFeaturedProducts();
+     
+        request.setAttribute("featuredProducts", list);
         request.getRequestDispatcher("index.jsp").forward(request, response);
     }
 }

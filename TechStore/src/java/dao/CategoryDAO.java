@@ -15,7 +15,13 @@ public class CategoryDAO extends DBContext {
             PreparedStatement st = connection.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
-                list.add(new Category(rs.getInt("id"), rs.getString("name")));
+                int pId = 0;
+                try {
+                    pId = rs.getInt("parent_id");
+                } catch (Exception e) {
+                }
+
+                list.add(new Category(rs.getInt("id"), rs.getString("name"), pId));
             }
         } catch (Exception e) {
             e.printStackTrace();

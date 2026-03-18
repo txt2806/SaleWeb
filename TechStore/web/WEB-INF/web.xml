@@ -16,6 +16,14 @@
         <servlet-name>CartServlet</servlet-name>
         <servlet-class>controller.CartServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>EmailUtils</servlet-name>
+        <servlet-class>util.EmailUtils</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>VerifyServlet</servlet-name>
+        <servlet-class>controller.VerifyServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CheckOutServlet</servlet-name>
         <url-pattern>/CheckOutServlet</url-pattern>
@@ -31,5 +39,13 @@
     <servlet-mapping>
         <servlet-name>CartServlet</servlet-name>
         <url-pattern>/CartServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EmailUtils</servlet-name>
+        <url-pattern>/EmailUtils</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VerifyServlet</servlet-name>
+        <url-pattern>/VerifyServlet</url-pattern>
     </servlet-mapping>
 </web-app>

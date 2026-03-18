@@ -52,3 +52,4 @@ public class ProductServlet extends HttpServlet {
         request.getRequestDispatcher("products.jsp").forward(request, response);
     }
 }
+    
