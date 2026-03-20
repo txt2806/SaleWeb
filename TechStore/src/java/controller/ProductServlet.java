@@ -23,24 +23,38 @@ public class ProductServlet extends HttpServlet {
         String keyword = request.getParameter("keyword");
         String cateIdStr = request.getParameter("category_id");
 
-        List<Product> listP;
-
         // --- 1. LOGIC TÌM KIẾM VÀ LỌC SẢN PHẨM ---
-        if (keyword != null && !keyword.trim().isEmpty()) {
-            // Nếu người dùng nhập từ khóa tìm kiếm
-            listP = pDao.search(keyword);
-            request.setAttribute("keyword", keyword); // Giữ lại từ khóa trên ô input
+        String minPriceStr = request.getParameter("min_price");
+        String maxPriceStr = request.getParameter("max_price");
+        String sortBy = request.getParameter("sort_by");
 
-        } else if (cateIdStr != null && !cateIdStr.isEmpty()) {
-            // Nếu người dùng bấm vào một danh mục
-            int cateId = Integer.parseInt(cateIdStr);
-            listP = pDao.getProductsByCategory(cateId);
-            request.setAttribute("activeCategory", cateId); // Đánh dấu danh mục đang chọn
-
-        } else {
-            // Mặc định hiển thị tất cả sản phẩm
-            listP = pDao.getAllProducts();
+        Integer cateId = null;
+        if (cateIdStr != null && !cateIdStr.isEmpty()) {
+            try { cateId = Integer.parseInt(cateIdStr); } catch (Exception e) { }
+            request.setAttribute("activeCategory", cateId);
         }
+
+        Double minPrice = null;
+        if (minPriceStr != null && !minPriceStr.isEmpty()) {
+            try { minPrice = Double.parseDouble(minPriceStr); } catch (Exception e) { }
+            request.setAttribute("minPrice", minPriceStr);
+        }
+
+        Double maxPrice = null;
+        if (maxPriceStr != null && !maxPriceStr.isEmpty()) {
+            try { maxPrice = Double.parseDouble(maxPriceStr); } catch (Exception e) { }
+            request.setAttribute("maxPrice", maxPriceStr);
+        }
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            request.setAttribute("keyword", keyword);
+        }
+
+        if (sortBy != null && !sortBy.isEmpty()) {
+            request.setAttribute("sortBy", sortBy);
+        }
+
+        List<Product> listP = pDao.getFilteredProducts(keyword, cateId, minPrice, maxPrice, sortBy);
 
         // --- 2. LẤY DANH SÁCH DANH MỤC CHO THANH MENU ---
         List<Category> listC = cDao.getAllCategories();

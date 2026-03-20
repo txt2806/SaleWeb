@@ -25,9 +25,15 @@ public class RegisterServlet extends HttpServlet {
         // 2. Tạo mã OTP 6 số ngẫu nhiên
         String token = String.valueOf((int) ((Math.random() * 900000) + 100000));
 
-        // 3. Lưu thông tin vào Database (Lưu ý: Bạn phải có cột is_verified và token trong DB)
+        // 3. Lưu thông tin vào Database
         UserDAO dao = new UserDAO();
-        dao.registerWithToken(user, pass, email, token);
+        boolean isSuccess = dao.registerWithToken(user, pass, email, token);
+        
+        if (!isSuccess) {
+            request.setAttribute("error", "Tên đăng nhập hoặc Email đã tồn tại. Vui lòng chọn tên/email khác!");
+            request.getRequestDispatcher("register.jsp").forward(request, response);
+            return;
+        }
 
         // 4. Gửi Email chứa mã OTP
         EmailUtils.sendVerificationEmail(email, token);

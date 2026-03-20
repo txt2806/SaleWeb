@@ -152,6 +152,61 @@ public class ProductDAO extends DBContext {
             e.printStackTrace();
         }
     }
+    public List<Product> getFilteredProducts(String keyword, Integer categoryId, Double minPrice, Double maxPrice, String sortBy) {
+        List<Product> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT * FROM Products WHERE 1=1");
+        
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            sql.append(" AND name LIKE ?");
+        }
+        if (categoryId != null && categoryId > 0) {
+            sql.append(" AND category_id = ?");
+        }
+        if (minPrice != null) {
+            sql.append(" AND price >= ?");
+        }
+        if (maxPrice != null) {
+            sql.append(" AND price <= ?");
+        }
+        
+        if ("price_asc".equals(sortBy)) {
+            sql.append(" ORDER BY price ASC");
+        } else if ("price_desc".equals(sortBy)) {
+            sql.append(" ORDER BY price DESC");
+        } else if ("best_selling".equals(sortBy)) {
+            // sql.append(" ORDER BY sold_quantity DESC"); // TODO: Bỏ comment khi bạn đã tạo cột sold_quantity trong DB
+            sql.append(" ORDER BY id DESC");
+        } else if ("least_selling".equals(sortBy)) {
+            // sql.append(" ORDER BY sold_quantity ASC"); // TODO: Bỏ comment khi bạn đã tạo cột sold_quantity trong DB
+            sql.append(" ORDER BY id ASC");
+        } else {
+            sql.append(" ORDER BY id DESC");
+        }
 
- 
+        try {
+            PreparedStatement st = connection.prepareStatement(sql.toString());
+            int paramIndex = 1;
+            
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                st.setString(paramIndex++, "%" + keyword + "%");
+            }
+            if (categoryId != null && categoryId > 0) {
+                st.setInt(paramIndex++, categoryId);
+            }
+            if (minPrice != null) {
+                st.setDouble(paramIndex++, minPrice);
+            }
+            if (maxPrice != null) {
+                st.setDouble(paramIndex++, maxPrice);
+            }
+            
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                list.add(mapResultSetToProduct(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

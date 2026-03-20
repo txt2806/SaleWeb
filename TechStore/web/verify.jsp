@@ -20,6 +20,10 @@
                 <input type="text" name="otp" placeholder="------" maxlength="6" required autocomplete="off">
                 <button type="submit" class="btn" style="width: 100%; padding: 14px; font-size: 16px; border-radius: 8px;">Kích hoạt tài khoản</button>
             </form>
+            
+            <div style="margin-top: 15px;">
+                <a href="resend_otp.jsp" style="color: #007bff; text-decoration: none; font-size: 14px;">Chưa nhận được mã? Gửi lại mã.</a>
+            </div>
         </div>
 
         <%@include file="footer.jsp"%>

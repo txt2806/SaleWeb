@@ -33,11 +33,14 @@
                         </div>
                     </c:if>
 
-                    <button class="auth-btn">ĐĂNG NHẬP</button>
+                    <button type="submit" class="auth-btn">Đăng nhập</button>
                 </form>
-
+                
                 <div class="auth-links">
-                    Chưa có tài khoản? <a href="register.jsp">Đăng ký ngay</a>
+                    <p style="margin-bottom: 10px;">
+                        <a href="resend_otp.jsp" style="color: #e67e22;">Tài khoản chưa xác minh? Gửi lại mã OTP</a>
+                    </p>
+                    <p>Chưa có tài khoản? <a href="register.jsp">Đăng ký ngay</a></p>
                 </div>
             </div>
         </div>

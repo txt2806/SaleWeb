@@ -30,7 +30,7 @@ public class UserDAO extends DBContext {
         return null;
     }
 
-    public void registerWithToken(String user, String pass, String email, String token) {
+    public boolean registerWithToken(String user, String pass, String email, String token) {
         String sql = "INSERT INTO Users (username, password, email, role, is_verified, token) VALUES (?, ?, ?, 0, 0, ?)";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -38,6 +38,19 @@ public class UserDAO extends DBContext {
             st.setString(2, pass);
             st.setString(3, email);
             st.setString(4, token);
+            st.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public void updateToken(String email, String token) {
+        String sql = "UPDATE Users SET token = ? WHERE email = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, token);
+            st.setString(2, email);
             st.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();

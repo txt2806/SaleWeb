@@ -13,7 +13,11 @@
         return;
     }
     ProductDAO pDao = new ProductDAO();
-    request.setAttribute("pList", pDao.getAllProducts());
+    String sortBy = request.getParameter("sort_by");
+    if (sortBy == null) sortBy = "";
+    
+    request.setAttribute("pList", pDao.getFilteredProducts(null, null, null, null, sortBy));
+    request.setAttribute("sortBy", sortBy);
     request.setAttribute("cList", new CategoryDAO().getAllCategories());
 %>
 <!DOCTYPE html>
@@ -158,7 +162,8 @@
                                 <th width="50">ID</th>
                                 <th width="80">Ảnh</th>
                                 <th>Tên sản phẩm</th>
-                                <th>Giá bán</th>
+                                <th><a href="?sort_by=${sortBy == 'price_desc' ? 'price_asc' : 'price_desc'}" style="color: inherit; text-decoration: none;">Giá bán ${sortBy == 'price_asc' ? '↑' : (sortBy == 'price_desc' ? '↓' : '↕')}</a></th>
+                                <th><a href="?sort_by=${sortBy == 'best_selling' ? 'least_selling' : 'best_selling'}" style="color: inherit; text-decoration: none;">Đã bán ${sortBy == 'least_selling' ? '↑' : (sortBy == 'best_selling' ? '↓' : '↕')}</a></th>
                                 <th style="text-align: center;">Nổi bật (Tích chọn)</th>
                                 <th style="text-align: center;">Thao tác</th>
                             </tr>
@@ -171,6 +176,9 @@
                                     <td><b>${p.name}</b></td>
                                     <td style="color:#d70018; font-weight:bold;">
                                         <fmt:formatNumber value="${p.price}" pattern="#,###"/>đ
+                                    </td>
+                                    <td style="font-weight: 500;">
+                                        ${p.soldQuantity}
                                     </td>
                                     <td style="text-align: center;">
                                         <input type="checkbox" name="featuredIds" value="${p.id}" ${p.featured ? 'checked' : ''} style="transform: scale(1.3); cursor: pointer;">
