@@ -16,8 +16,20 @@
     String sortBy = request.getParameter("sort_by");
     if (sortBy == null) sortBy = "";
     
-    request.setAttribute("pList", pDao.getFilteredProducts(null, null, null, null, sortBy));
+    int pageNum = 1;
+    String pageStr = request.getParameter("page");
+    if (pageStr != null && !pageStr.isEmpty()) {
+        try { pageNum = Integer.parseInt(pageStr); } catch (Exception e) {}
+    }
+    int pageSize = 10;
+    
+    int totalProducts = pDao.getTotalFilteredProducts(null, null, null, null);
+    int totalPages = (int) Math.ceil((double) totalProducts / pageSize);
+
+    request.setAttribute("pList", pDao.getFilteredProducts(null, null, null, null, sortBy, pageNum, pageSize));
     request.setAttribute("sortBy", sortBy);
+    request.setAttribute("currentPage", pageNum);
+    request.setAttribute("totalPages", totalPages);
     request.setAttribute("cList", new CategoryDAO().getAllCategories());
 %>
 <!DOCTYPE html>
@@ -192,6 +204,17 @@
                         </tbody>
                     </table>
                 </form>
+
+                <c:if test="${totalPages > 1}">
+                    <div class="pagination" style="text-align: center; margin-top: 20px;">
+                        <c:forEach begin="1" end="${totalPages}" var="i">
+                            <a href="?sort_by=${sortBy}&page=${i}" 
+                               style="display: inline-block; padding: 6px 12px; margin: 0 4px; border: 1px solid #ddd; text-decoration: none; color: ${i == currentPage ? '#fff' : '#333'}; background-color: ${i == currentPage ? '#d70018' : '#f9f9f9'}; border-radius: 4px;">
+                                ${i}
+                            </a>
+                        </c:forEach>
+                    </div>
+                </c:if>
             </div>
         </div>
 

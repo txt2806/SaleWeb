@@ -35,13 +35,72 @@
 
                     <button type="submit" class="auth-btn">Đăng nhập</button>
                 </form>
+                    <div style="text-align:center; margin: 15px 0; color: #666; font-size: 14px; position:relative;">
+                        <span style="background:#fff; padding:0 10px; position:relative; z-index:1;">Hoặc đăng nhập bằng</span>
+                        <div style="border-top: 1px solid #ddd; position:absolute; top:50%; width:100%; z-index:0;"></div>
+                    </div>
+                    
+                    <button type="button" id="btnGoogle" class="auth-btn" style="background:#db4437; margin-bottom:10px; display:flex; align-items:center; justify-content:center; gap:10px;">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="20" height="20" style="background:white; border-radius:50%; padding:2px;">
+                        Google
+                    </button>
+                    <button type="button" id="btnFacebook" class="auth-btn" style="background:#4267B2; margin-bottom:15px; display:flex; align-items:center; justify-content:center; gap:10px;">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" width="20" height="20">
+                        Facebook
+                    </button>
+                </form>
                 
+                <form id="socialLoginForm" action="social_login" method="post" style="display:none;">
+                    <input type="hidden" name="email" id="socialEmail">
+                    <input type="hidden" name="name" id="socialName">
+                    <input type="hidden" name="uid" id="socialUid">
+                </form>
+
                 <div class="auth-links">
-                    <p style="margin-bottom: 10px;">
-                        <a href="resend_otp.jsp" style="color: #e67e22;">Tài khoản chưa xác minh? Gửi lại mã OTP</a>
-                    </p>
                     <p>Chưa có tài khoản? <a href="register.jsp">Đăng ký ngay</a></p>
                 </div>
+
+                <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+                <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+                <script>
+                    const firebaseConfig = {
+                        apiKey: "AIzaSyAhLKndXDDp_irCW3mIfdeFt3vnlFnYlBE",
+                        authDomain: "techstore-361e2.firebaseapp.com",
+                        projectId: "techstore-361e2",
+                        storageBucket: "techstore-361e2.firebasestorage.app",
+                        messagingSenderId: "858945999785",
+                        appId: "1:858945999785:web:07d4d8cbd248ceb311eab8",
+                        measurementId: "G-D04FD2NPH9"
+                    };
+                    if (firebase.apps.length === 0) {
+                        firebase.initializeApp(firebaseConfig);
+                    }
+
+                    function submitSocialLogin(user) {
+                        document.getElementById("socialEmail").value = user.email || (user.uid + "@facebook.com");
+                        document.getElementById("socialName").value = user.displayName || "User_" + user.uid.substring(0, 5);
+                        document.getElementById("socialUid").value = user.uid;
+                        document.getElementById("socialLoginForm").submit();
+                    }
+
+                    document.getElementById("btnGoogle").addEventListener("click", function() {
+                        var provider = new firebase.auth.GoogleAuthProvider();
+                        firebase.auth().signInWithPopup(provider).then(function(result) {
+                            submitSocialLogin(result.user);
+                        }).catch(function(error) {
+                            alert("Đăng nhập Google thất bại: " + error.message);
+                        });
+                    });
+
+                    document.getElementById("btnFacebook").addEventListener("click", function() {
+                        var provider = new firebase.auth.FacebookAuthProvider();
+                        firebase.auth().signInWithPopup(provider).then(function(result) {
+                            submitSocialLogin(result.user);
+                        }).catch(function(error) {
+                            alert("Đăng nhập Facebook thất bại: " + error.message);
+                        });
+                    });
+                </script>
             </div>
         </div>
 

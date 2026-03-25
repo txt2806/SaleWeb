@@ -54,7 +54,20 @@ public class ProductServlet extends HttpServlet {
             request.setAttribute("sortBy", sortBy);
         }
 
-        List<Product> listP = pDao.getFilteredProducts(keyword, cateId, minPrice, maxPrice, sortBy);
+        int page = 1;
+        String pageStr = request.getParameter("page");
+        if (pageStr != null && !pageStr.isEmpty()) {
+            try { page = Integer.parseInt(pageStr); } catch (Exception e) {}
+        }
+        int pageSize = 9;
+
+        int totalProducts = pDao.getTotalFilteredProducts(keyword, cateId, minPrice, maxPrice);
+        int totalPages = (int) Math.ceil((double) totalProducts / pageSize);
+
+        List<Product> listP = pDao.getFilteredProducts(keyword, cateId, minPrice, maxPrice, sortBy, page, pageSize);
+
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
 
         // --- 2. LẤY DANH SÁCH DANH MỤC CHO THANH MENU ---
         List<Category> listC = cDao.getAllCategories();

@@ -9,18 +9,22 @@ public class User {
     private int role;
     private int isVerified;
     private String token;
+    private String avatar;
+    private String phone;
 
     public User() {
     }
 
-    public User(int id, String username, String password, String email, int role, int isVerified, String token) {
+    public User(int id, String username, String password, String email, String phone, int role, int isVerified, String token, String avatar) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
+        this.phone = phone;
         this.role = role;
         this.isVerified = isVerified;
         this.token = token;
+        this.avatar = avatar;
     }
 
     public int getId() {
@@ -77,5 +81,21 @@ public class User {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

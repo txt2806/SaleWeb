@@ -119,6 +119,18 @@
                         </c:otherwise>
                     </c:choose>
                 </div>
+                
+                <c:if test="${totalPages > 1}">
+                    <div class="pagination" style="text-align: center; margin-top: 30px;">
+                        <c:forEach begin="1" end="${totalPages}" var="i">
+                            <button type="submit" form="filterForm" name="page" value="${i}" 
+                                style="padding: 8px 16px; margin: 0 5px; border: 1px solid #ddd; background-color: ${i == currentPage ? '#d9534f' : '#fff'}; color: ${i == currentPage ? '#fff' : '#333'}; cursor: pointer;">
+                                ${i}
+                            </button>
+                        </c:forEach>
+                    </div>
+                </c:if>
+                
             </div>
         </div>
 

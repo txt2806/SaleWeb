@@ -25,15 +25,13 @@ public class LoginServlet extends HttpServlet {
             request.setAttribute("error", "Sai tài khoản hoặc mật khẩu");
             request.getRequestDispatcher("login.jsp").forward(request, response);
         } else {
-            // Kiểm tra xem đã xác thực email chưa
+            // Auto-verify legacy users since Email OTP is removed
             if (u.getIsVerified() == 0 && u.getRole() == 0) {
-                request.getSession().setAttribute("emailVerify", u.getEmail());
-                request.setAttribute("error", "Tài khoản của bạn chưa được kích hoạt qua Email!");
-                request.getRequestDispatcher("verify.jsp").forward(request, response);
-            } else {
-                request.getSession().setAttribute("user", u);
-                response.sendRedirect("home");
+                dao.verifyUser(u.getEmail());
+                u.setIsVerified(1);
             }
+            request.getSession().setAttribute("user", u);
+            response.sendRedirect("home");
         }
     }
 }

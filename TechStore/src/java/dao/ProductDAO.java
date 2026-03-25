@@ -28,7 +28,7 @@ public class ProductDAO extends DBContext {
     public List<Product> getAllProducts() {
         List<Product> list = new ArrayList<>();
         try {
-            PreparedStatement st = connection.prepareStatement("SELECT * FROM Products");
+            PreparedStatement st = connection.prepareStatement("SELECT * FROM Products WHERE is_deleted = 0 ORDER BY id DESC");
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 list.add(mapResultSetToProduct(rs));
@@ -42,7 +42,7 @@ public class ProductDAO extends DBContext {
     public List<Product> getFeaturedProducts() {
         List<Product> list = new ArrayList<>();
         try {
-            PreparedStatement st = connection.prepareStatement("SELECT * FROM Products WHERE is_featured = 1");
+            PreparedStatement st = connection.prepareStatement("SELECT * FROM Products WHERE is_featured = 1 AND is_deleted = 0 ORDER BY id DESC");
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 list.add(mapResultSetToProduct(rs));
@@ -56,7 +56,7 @@ public class ProductDAO extends DBContext {
     public List<Product> getProductsByCategory(int categoryId) {
         List<Product> list = new ArrayList<>();
         try {
-            PreparedStatement st = connection.prepareStatement("SELECT * FROM Products WHERE category_id = ?");
+            PreparedStatement st = connection.prepareStatement("SELECT * FROM Products WHERE category_id = ? AND is_deleted = 0 ORDER BY id DESC");
             st.setInt(1, categoryId);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
@@ -71,7 +71,7 @@ public class ProductDAO extends DBContext {
     public List<Product> search(String keyword) {
         List<Product> list = new ArrayList<>();
         try {
-            PreparedStatement st = connection.prepareStatement("SELECT * FROM Products WHERE name LIKE ?");
+            PreparedStatement st = connection.prepareStatement("SELECT * FROM Products WHERE name LIKE ? AND is_deleted = 0 ORDER BY id DESC");
             st.setString(1, "%" + keyword + "%");
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
@@ -132,7 +132,7 @@ public class ProductDAO extends DBContext {
     }
 
     public void deleteProduct(int id) {
-        String sql = "DELETE FROM Products WHERE id=?";
+        String sql = "UPDATE Products SET is_deleted = 1 WHERE id=?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, id);
@@ -153,8 +153,50 @@ public class ProductDAO extends DBContext {
         }
     }
     public List<Product> getFilteredProducts(String keyword, Integer categoryId, Double minPrice, Double maxPrice, String sortBy) {
+        return getFilteredProducts(keyword, categoryId, minPrice, maxPrice, sortBy, 1, 100);
+    }
+    
+    public int getTotalFilteredProducts(String keyword, Integer categoryId, Double minPrice, Double maxPrice) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM Products WHERE is_deleted = 0");
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            sql.append(" AND name LIKE ?");
+        }
+        if (categoryId != null && categoryId > 0) {
+            sql.append(" AND category_id = ?");
+        }
+        if (minPrice != null) {
+            sql.append(" AND price >= ?");
+        }
+        if (maxPrice != null) {
+            sql.append(" AND price <= ?");
+        }
+        
+        try {
+            PreparedStatement st = connection.prepareStatement(sql.toString());
+            int paramIndex = 1;
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                st.setString(paramIndex++, "%" + keyword + "%");
+            }
+            if (categoryId != null && categoryId > 0) {
+                st.setInt(paramIndex++, categoryId);
+            }
+            if (minPrice != null) {
+                st.setDouble(paramIndex++, minPrice);
+            }
+            if (maxPrice != null) {
+                st.setDouble(paramIndex++, maxPrice);
+            }
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public List<Product> getFilteredProducts(String keyword, Integer categoryId, Double minPrice, Double maxPrice, String sortBy, int page, int pageSize) {
         List<Product> list = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT * FROM Products WHERE 1=1");
+        StringBuilder sql = new StringBuilder("SELECT * FROM Products WHERE is_deleted = 0");
         
         if (keyword != null && !keyword.trim().isEmpty()) {
             sql.append(" AND name LIKE ?");
@@ -184,6 +226,8 @@ public class ProductDAO extends DBContext {
         }
 
         try {
+            sql.append(" OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+            
             PreparedStatement st = connection.prepareStatement(sql.toString());
             int paramIndex = 1;
             
@@ -200,6 +244,36 @@ public class ProductDAO extends DBContext {
                 st.setDouble(paramIndex++, maxPrice);
             }
             
+            st.setInt(paramIndex++, (page - 1) * pageSize);
+            st.setInt(paramIndex++, pageSize);
+            
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                list.add(mapResultSetToProduct(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public int getTotalProductsCount() {
+        try {
+            PreparedStatement st = connection.prepareStatement("SELECT COUNT(*) FROM Products WHERE is_deleted = 0");
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public List<Product> getProductsByPage(int page, int pageSize) {
+        List<Product> list = new ArrayList<>();
+        try {
+            PreparedStatement st = connection.prepareStatement("SELECT * FROM Products WHERE is_deleted = 0 ORDER BY id DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+            st.setInt(1, (page - 1) * pageSize);
+            st.setInt(2, pageSize);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 list.add(mapResultSetToProduct(rs));
