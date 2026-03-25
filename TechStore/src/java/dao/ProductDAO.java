@@ -12,6 +12,11 @@ public class ProductDAO extends DBContext {
             soldQty = rs.getInt("sold_quantity");
         } catch (Exception e) {
         }
+        int stockVal = 0;
+        try {
+            stockVal = rs.getInt("stock");
+        } catch (Exception e) {
+        }
 
         return new Product(
                 rs.getInt("id"),
@@ -21,7 +26,11 @@ public class ProductDAO extends DBContext {
                 rs.getString("image"),
                 rs.getInt("category_id"),
                 rs.getBoolean("is_featured"),
-                soldQty
+                rs.getBoolean("is_deleted"),
+                soldQty,
+                stockVal,
+                rs.getTimestamp("created_at"),
+                rs.getTimestamp("updated_at")
         );
     }
 
@@ -216,11 +225,9 @@ public class ProductDAO extends DBContext {
         } else if ("price_desc".equals(sortBy)) {
             sql.append(" ORDER BY price DESC");
         } else if ("best_selling".equals(sortBy)) {
-            // sql.append(" ORDER BY sold_quantity DESC"); // TODO: Bỏ comment khi bạn đã tạo cột sold_quantity trong DB
-            sql.append(" ORDER BY id DESC");
+            sql.append(" ORDER BY sold_quantity DESC");
         } else if ("least_selling".equals(sortBy)) {
-            // sql.append(" ORDER BY sold_quantity ASC"); // TODO: Bỏ comment khi bạn đã tạo cột sold_quantity trong DB
-            sql.append(" ORDER BY id ASC");
+            sql.append(" ORDER BY sold_quantity ASC");
         } else {
             sql.append(" ORDER BY id DESC");
         }

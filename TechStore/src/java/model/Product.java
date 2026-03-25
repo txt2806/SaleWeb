@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Date;
+
 public class Product {
 
     private int id;
@@ -9,12 +11,16 @@ public class Product {
     private String image;
     private int categoryId;
     private boolean isFeatured;
+    private boolean isDeleted;
     private int soldQuantity;
+    private int stock;
+    private Date createdAt;
+    private Date updatedAt;
 
     public Product() {
     }
 
-    public Product(int id, String name, double price, String description, String image, int categoryId, boolean isFeatured, int soldQuantity) {
+    public Product(int id, String name, double price, String description, String image, int categoryId, boolean isFeatured, boolean isDeleted, int soldQuantity, int stock, Date createdAt, Date updatedAt) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -22,7 +28,11 @@ public class Product {
         this.image = image;
         this.categoryId = categoryId;
         this.isFeatured = isFeatured;
+        this.isDeleted = isDeleted;
         this.soldQuantity = soldQuantity;
+        this.stock = stock;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public int getId() {
@@ -87,5 +97,37 @@ public class Product {
 
     public void setSoldQuantity(int soldQuantity) {
         this.soldQuantity = soldQuantity;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

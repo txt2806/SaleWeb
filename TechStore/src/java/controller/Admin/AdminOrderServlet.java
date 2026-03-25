@@ -42,4 +42,28 @@ public class AdminOrderServlet extends HttpServlet {
             request.getRequestDispatcher("/admin_orders.jsp").forward(request, response);
         }
     }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!checkAdmin(request, response)) {
+            return;
+        }
+
+        String action = request.getParameter("action");
+
+        if ("update_status".equals(action)) {
+            int orderId = Integer.parseInt(request.getParameter("order_id"));
+            String newStatus = request.getParameter("new_status");
+
+            OrderDAO dao = new OrderDAO();
+            // Only increment sold_quantity if not already Completed
+            String currentStatus = dao.getOrderStatus(orderId);
+            if ("Completed".equals(newStatus) && "Completed".equals(currentStatus)) {
+                // Already completed, just redirect without double-counting
+            } else {
+                dao.updateOrderStatus(orderId, newStatus);
+            }
+        }
+
+        response.sendRedirect(request.getContextPath() + "/admin/orders");
+    }
 }

@@ -58,29 +58,29 @@
 </style>
 
 <nav class="navbar">
-    <a href="home" class="logo">TechStore</a>
+    <a href="${pageContext.request.contextPath}/home" class="logo">TechStore</a>
 
     <div class="search-bar-header">
-        <form action="products" method="GET">
+        <form action="${pageContext.request.contextPath}/products" method="GET">
             <input type="text" name="keyword" placeholder="Bạn cần tìm gì?">
             <button type="submit">🔍</button>
         </form>
     </div>
 
     <div class="nav-links">
-        <a href="home">🏠 Trang chủ</a>
-        <a href="products">📦 Sản phẩm</a>
-        <a href="cart">🛒 Giỏ hàng</a>
+        <a href="${pageContext.request.contextPath}/home">🏠 Trang chủ</a>
+        <a href="${pageContext.request.contextPath}/products">📦 Sản phẩm</a>
+        <a href="${pageContext.request.contextPath}/cart">🛒 Giỏ hàng</a>
 
         <c:choose>
             <c:when test="${sessionScope.user == null}">
-                <a href="login.jsp">🔑 Đăng nhập</a>
+                <a href="${pageContext.request.contextPath}/login.jsp">🔑 Đăng nhập</a>
             </c:when>
             <c:otherwise>
                 <c:if test="${sessionScope.user.role == 1}">
-                    <a href="admin_dashboard.jsp" style="color: #ffcc00; font-weight: bold;">🛠 QL Sản phẩm</a>
-                    <a href="admin/orders" style="color: #4ade80; font-weight: bold;">📦 QL Đơn hàng</a>
-                    <a href="admin/users" style="color: #60a5fa; font-weight: bold;">👥 QL Người dùng</a>
+                    <a href="${pageContext.request.contextPath}/admin_dashboard.jsp" style="color: #ffcc00; font-weight: bold;">🛠 QL Sản phẩm</a>
+                    <a href="${pageContext.request.contextPath}/admin/orders" style="color: #4ade80; font-weight: bold;">📦 QL Đơn hàng</a>
+                    <a href="${pageContext.request.contextPath}/admin/users" style="color: #60a5fa; font-weight: bold;">👥 QL Người dùng</a>
                 </c:if>
 
                 <div class="user-menu">
@@ -96,9 +96,9 @@
                         <span>${sessionScope.user.username} ▼</span>
                     </button>
                     <div class="dropdown-content">
-                        <a href="profile.jsp">👤 Thông tin cá nhân</a>
-                        <a href="change_password.jsp">🔒 Đổi mật khẩu</a>
-                        <a href="logout">🚪 Đăng xuất</a>
+                        <a href="${pageContext.request.contextPath}/profile.jsp">👤 Thông tin cá nhân</a>
+                        <a href="${pageContext.request.contextPath}/change_password.jsp">🔒 Đổi mật khẩu</a>
+                        <a href="${pageContext.request.contextPath}/logout">🚪 Đăng xuất</a>
                     </div>
                 </div>
             </c:otherwise>

@@ -11,11 +11,12 @@ public class User {
     private String token;
     private String avatar;
     private String phone;
+    private java.util.Date createdAt;
 
     public User() {
     }
 
-    public User(int id, String username, String password, String email, String phone, int role, int isVerified, String token, String avatar) {
+    public User(int id, String username, String password, String email, String phone, int role, int isVerified, String token, String avatar, java.util.Date createdAt) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -25,6 +26,7 @@ public class User {
         this.isVerified = isVerified;
         this.token = token;
         this.avatar = avatar;
+        this.createdAt = createdAt;
     }
 
     public int getId() {
@@ -97,5 +99,13 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public java.util.Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(java.util.Date createdAt) {
+        this.createdAt = createdAt;
     }
 }

@@ -4,7 +4,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>ÄÄƒng kĂ½ - TechStore</title>
+        <title>Dang ky - TechStore</title>
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
@@ -16,60 +16,56 @@
                 <div class="auth-icon">
                     <img src="https://cdn-icons-png.flaticon.com/512/3596/3596091.png" width="60" alt="Register Icon" style="opacity: 0.8;">
                 </div>
-                <h2 class="auth-title">ÄÄƒng KĂ½</h2>
-                <p class="auth-subtitle">Táº¡o tĂ i khoáº£n Ä‘á»ƒ nháº­n nhiá»u Æ°u Ä‘Ă£i</p>
+                <h2 class="auth-title">Dang Ky</h2>
+                <p class="auth-subtitle">Tao tai khoan de nhan nhieu uu dai</p>
 
                 <form action="register" method="post" class="auth-form" id="registerForm">
                     <div style="display:flex; margin-bottom: 15px;">
                         <button type="button" id="tabEmail" style="flex:1; padding:10px; border:1px solid #ccc; background:#fff; cursor:pointer; font-weight:bold; border-bottom:2px solid #e67e22; color:#e67e22;">Qua Email</button>
-                        <button type="button" id="tabPhone" style="flex:1; padding:10px; border:1px solid #ccc; background:#f9f9f9; cursor:pointer; color:#333;">Qua SĐT</button>
+                        <button type="button" id="tabPhone" style="flex:1; padding:10px; border:1px solid #ccc; background:#f9f9f9; cursor:pointer; color:#333;">Qua SDT</button>
                     </div>
 
                     <div class="form-group">
-                        <input type="text" name="username" id="regUser" placeholder="Tên đăng nhập" required>
+                        <input type="text" name="username" id="regUser" placeholder="Ten dang nhap" required>
                     </div>
                     <div class="form-group">
-                        <input type="password" name="password" id="regPass" placeholder="Mật khẩu" required>
+                        <input type="password" name="password" id="regPass" placeholder="Mat khau" required>
                     </div>
                     
                     <div class="form-group" id="groupEmail">
-                        <input type="email" name="email" id="regEmail" placeholder="Địa chỉ Email" required>
+                        <input type="email" name="email" id="regEmail" placeholder="Dia chi Email" required>
                     </div>
                     <div class="form-group" id="groupPhone" style="display:none;">
-                        <input type="text" name="phone" id="regPhone" placeholder="Số điện thoại (+84...)">
+                        <input type="text" name="phone" id="regPhone" placeholder="So dien thoai (+84...)">
                     </div>
 
                     <input type="hidden" name="isVerified" id="isVerifiedFlag" value="0">
 
                     <c:if test="${not empty error}">
                         <div class="error-msg">
-                            ⚠️ ${error}
+                            ${error}
                         </div>
                     </c:if>
 
                     <div id="recaptcha-container"></div>
                     <div class="form-group" id="otp-group" style="display:none; margin-top:10px;">
-                        <input type="text" id="otp" placeholder="Nhập mã OTP từ SMS">
-                        <button type="button" id="btnVerifyOTP" class="auth-btn" style="background:#4ade80; margin-top:5px;">XÁC NHẬN OTP</button>
+                        <input type="text" id="otp" placeholder="Nhap ma OTP tu SMS">
+                        <button type="button" id="btnVerifyOTP" class="auth-btn" style="background:#4ade80; margin-top:5px;">XAC NHAN OTP</button>
                     </div>
 
-                    <button type="button" id="btnSubmitEmail" class="auth-btn" style="margin-top:10px;">ĐĂNG KÝ BẰNG EMAIL</button>
-                    <button type="button" id="btnSendOTP" class="auth-btn" style="background:#f59e0b; margin-top:10px; display:none;">GỬI OTP TỚI SĐT</button>
+                    <button type="button" id="btnSubmitEmail" class="auth-btn" style="margin-top:10px;">DANG KY BANG EMAIL</button>
+                    <button type="button" id="btnSendOTP" class="auth-btn" style="background:#f59e0b; margin-top:10px; display:none;">GUI OTP TOI SDT</button>
                     <button type="submit" id="btnSubmit" style="display:none;"></button>
                 </form>
 
                 <div style="text-align:center; margin: 15px 0; color: #666; font-size: 14px; position:relative;">
-                    <span style="background:#fff; padding:0 10px; position:relative; z-index:1;">Hoặc đăng ký bằng</span>
+                    <span style="background:#fff; padding:0 10px; position:relative; z-index:1;">Hoac dang ky bang</span>
                     <div style="border-top: 1px solid #ddd; position:absolute; top:50%; width:100%; z-index:0;"></div>
                 </div>
                 
-                <button type="button" id="btnGoogleReg" class="auth-btn" style="background:#db4437; margin-bottom:10px; display:flex; align-items:center; justify-content:center; gap:10px;">
+                <button type="button" id="btnGoogleReg" class="auth-btn" style="background:#db4437; margin-bottom:15px; display:flex; align-items:center; justify-content:center; gap:10px;">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="20" height="20" style="background:white; border-radius:50%; padding:2px;">
                     Google
-                </button>
-                <button type="button" id="btnFacebookReg" class="auth-btn" style="background:#4267B2; margin-bottom:15px; display:flex; align-items:center; justify-content:center; gap:10px;">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" width="20" height="20">
-                    Facebook
                 </button>
 
                 <form id="socialRegForm" action="social_login" method="post" style="display:none;">
@@ -132,20 +128,20 @@
                         const email = document.getElementById("regEmail").value;
                         const pass = document.getElementById("regPass").value;
                         
-                        document.getElementById("btnSubmitEmail").innerText = "Đang xử lý...";
+                        document.getElementById("btnSubmitEmail").innerText = "Dang xu ly...";
                         document.getElementById("btnSubmitEmail").disabled = true;
 
                         firebase.auth().createUserWithEmailAndPassword(email, pass)
                             .then(function(userCredential) {
                                 userCredential.user.sendEmailVerification().then(function() {
-                                    alert("Đăng ký Firebase thành công! Một Email xác minh vừa được gửi tới " + email);
+                                    alert("Dang ky Firebase thanh cong! Mot Email xac minh vua duoc gui toi " + email);
                                     document.getElementById("isVerifiedFlag").value = "0";
                                     document.getElementById("btnSubmit").click();
                                 });
                             })
                             .catch(function(error) {
-                                alert("Lỗi Firebase: " + error.message);
-                                document.getElementById("btnSubmitEmail").innerText = "ĐĂNG KÝ BẰNG EMAIL";
+                                alert("Loi Firebase: " + error.message);
+                                document.getElementById("btnSubmitEmail").innerText = "DANG KY BANG EMAIL";
                                 document.getElementById("btnSubmitEmail").disabled = false;
                             });
                     };
@@ -158,35 +154,35 @@
                         }
                         const phone = document.getElementById("regPhone").value;
                         if(!phone.startsWith("+84") && phone.startsWith("0")) {
-                            alert("Vui lòng nhập số điện thoại định dạng +84 (VD: +84912345678)");
+                            alert("Vui long nhap so dien thoai dinh dang +84 (VD: +84912345678)");
                             return;
                         }
-                        document.getElementById("btnSendOTP").innerText = "Đang gửi SMS...";
+                        document.getElementById("btnSendOTP").innerText = "Dang gui SMS...";
                         firebase.auth().signInWithPhoneNumber(phone, window.recaptchaVerifier)
                             .then(function (confirmationResult) {
                                 window.confirmationResult = confirmationResult;
                                 document.getElementById("otp-group").style.display = "block";
                                 document.getElementById("btnSendOTP").style.display = "none";
-                                alert("Đã gửi mã OTP!");
+                                alert("Da gui ma OTP!");
                             }).catch(function (error) {
-                                alert("Lỗi khi gửi SMS: " + error.message);
-                                document.getElementById("btnSendOTP").innerText = "GỬI OTP TỚI SĐT";
+                                alert("Loi khi gui SMS: " + error.message);
+                                document.getElementById("btnSendOTP").innerText = "GUI OTP TOI SDT";
                             });
                     };
 
                     document.getElementById("btnVerifyOTP").onclick = function() {
                         const code = document.getElementById("otp").value;
                         confirmationResult.confirm(code).then(function (result) {
-                            alert("Xác thực SĐT thành công!");
+                            alert("Xac thuc SDT thanh cong!");
                             document.getElementById("isVerifiedFlag").value = "1";
                             document.getElementById("btnSubmit").click();
                         }).catch(function (error) {
-                            alert("Mã OTP không đúng!");
+                            alert("Ma OTP khong dung!");
                         });
                     };
 
                     function submitSocialReg(user) {
-                        document.getElementById("socialRegEmail").value = user.email || (user.uid + "@facebook.com");
+                        document.getElementById("socialRegEmail").value = user.email || (user.uid + "@social.com");
                         document.getElementById("socialRegName").value = user.displayName || "User_" + user.uid.substring(0, 5);
                         document.getElementById("socialRegUid").value = user.uid;
                         document.getElementById("socialRegForm").submit();
@@ -195,20 +191,12 @@
                     document.getElementById("btnGoogleReg").addEventListener("click", function() {
                         var provider = new firebase.auth.GoogleAuthProvider();
                         firebase.auth().signInWithPopup(provider).then(function(result) { submitSocialReg(result.user); })
-                        .catch(function(error) { alert("Đăng nhập Google thất bại: " + error.message); });
-                    });
-                    document.getElementById("btnFacebookReg").addEventListener("click", function() {
-                        var provider = new firebase.auth.FacebookAuthProvider();
-                        firebase.auth().signInWithPopup(provider).then(function(result) { submitSocialReg(rup(provider).then(function(result) {
-                            submitSocialReg(result.user);
-                        }).catch(function(error) {
-                            alert("ÄÄƒng nháº­p Facebook tháº¥t báº¡i: " + error.message);
-                        });
+                        .catch(function(error) { alert("Dang nhap Google that bai: " + error.message); });
                     });
                 </script>
 
                 <div class="auth-links">
-                    ÄĂ£ cĂ³ tĂ i khoáº£n? <a href="login.jsp">ÄÄƒng nháº­p ngay</a>
+                    Da co tai khoan? <a href="login.jsp">Dang nhap ngay</a>
                 </div>
             </div>
         </div>

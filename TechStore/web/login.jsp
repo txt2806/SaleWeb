@@ -4,7 +4,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Đăng nhập - TechStore</title>
+        <title>Dang nhap - TechStore</title>
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
@@ -16,27 +16,27 @@
                 <div class="auth-icon">
                     <img src="https://cdn-icons-png.flaticon.com/512/295/295128.png" width="60" alt="Login Icon" style="opacity: 0.8;">
                 </div>
-                <h2 class="auth-title">Đăng Nhập</h2>
-                <p class="auth-subtitle">Chào mừng bạn trở lại với TechStore</p>
+                <h2 class="auth-title">Dang Nhap</h2>
+                <p class="auth-subtitle">Chao mung ban tro lai voi TechStore</p>
 
                 <form action="login" method="post" class="auth-form">
                     <div class="form-group">
-                        <input type="text" name="username" placeholder="Tên đăng nhập" required>
+                        <input type="text" name="username" placeholder="Ten dang nhap" required>
                     </div>
                     <div class="form-group">
-                        <input type="password" name="password" placeholder="Mật khẩu" required>
+                        <input type="password" name="password" placeholder="Mat khau" required>
                     </div>
 
                     <c:if test="${not empty error}">
                         <div class="error-msg">
-                            ⚠️ ${error}
+                            ${error}
                         </div>
                     </c:if>
 
-                    <button type="submit" class="auth-btn">Đăng nhập</button>
+                    <button type="submit" class="auth-btn">Dang nhap</button>
                 </form>
                     <div style="text-align:center; margin: 15px 0; color: #666; font-size: 14px; position:relative;">
-                        <span style="background:#fff; padding:0 10px; position:relative; z-index:1;">Hoặc đăng nhập bằng</span>
+                        <span style="background:#fff; padding:0 10px; position:relative; z-index:1;">Hoac dang nhap bang</span>
                         <div style="border-top: 1px solid #ddd; position:absolute; top:50%; width:100%; z-index:0;"></div>
                     </div>
                     
@@ -44,11 +44,6 @@
                         <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="20" height="20" style="background:white; border-radius:50%; padding:2px;">
                         Google
                     </button>
-                    <button type="button" id="btnFacebook" class="auth-btn" style="background:#4267B2; margin-bottom:15px; display:flex; align-items:center; justify-content:center; gap:10px;">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" width="20" height="20">
-                        Facebook
-                    </button>
-                </form>
                 
                 <form id="socialLoginForm" action="social_login" method="post" style="display:none;">
                     <input type="hidden" name="email" id="socialEmail">
@@ -57,7 +52,7 @@
                 </form>
 
                 <div class="auth-links">
-                    <p>Chưa có tài khoản? <a href="register.jsp">Đăng ký ngay</a></p>
+                    <p>Chua co tai khoan? <a href="register.jsp">Dang ky ngay</a></p>
                 </div>
 
                 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -77,7 +72,7 @@
                     }
 
                     function submitSocialLogin(user) {
-                        document.getElementById("socialEmail").value = user.email || (user.uid + "@facebook.com");
+                        document.getElementById("socialEmail").value = user.email || (user.uid + "@social.com");
                         document.getElementById("socialName").value = user.displayName || "User_" + user.uid.substring(0, 5);
                         document.getElementById("socialUid").value = user.uid;
                         document.getElementById("socialLoginForm").submit();
@@ -88,16 +83,7 @@
                         firebase.auth().signInWithPopup(provider).then(function(result) {
                             submitSocialLogin(result.user);
                         }).catch(function(error) {
-                            alert("Đăng nhập Google thất bại: " + error.message);
-                        });
-                    });
-
-                    document.getElementById("btnFacebook").addEventListener("click", function() {
-                        var provider = new firebase.auth.FacebookAuthProvider();
-                        firebase.auth().signInWithPopup(provider).then(function(result) {
-                            submitSocialLogin(result.user);
-                        }).catch(function(error) {
-                            alert("Đăng nhập Facebook thất bại: " + error.message);
+                            alert("Dang nhap Google that bai: " + error.message);
                         });
                     });
                 </script>

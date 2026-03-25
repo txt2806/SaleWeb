@@ -38,9 +38,9 @@ public class AdminProductServlet extends HttpServlet {
             int id = Integer.parseInt(request.getParameter("id"));
             Product p = dao.getProductById(id);
 
-            // Đẩy dữ liệu sản phẩm sang trang sửa
             request.setAttribute("productToEdit", p);
             request.getRequestDispatcher("/edit_product.jsp").forward(request, response);
+            return;
         } else if ("delete".equals(action)) {
             int id = Integer.parseInt(request.getParameter("id"));
             dao.deleteProduct(id);
@@ -83,11 +83,13 @@ public class AdminProductServlet extends HttpServlet {
         }
 
         if ("add".equals(action)) {
-            Product p = new Product(0, name, price, desc, imagePath, categoryId, isFeatured, 0);
+            Product p = new Product(0, name, price, desc, imagePath, categoryId, isFeatured, false, 0, 5, new java.util.Date(), new java.util.Date());
             dao.addProduct(p);
         } else if ("edit".equals(action)) {
             int id = Integer.parseInt(request.getParameter("id"));
-            Product p = new Product(id, name, price, desc, imagePath, categoryId, isFeatured, 0);
+            Product existing = dao.getProductById(id);
+            int currentStock = (existing != null) ? existing.getStock() : 5;
+            Product p = new Product(id, name, price, desc, imagePath, categoryId, isFeatured, false, 0, currentStock, new java.util.Date(), new java.util.Date());
             dao.updateProduct(p);
         }
 

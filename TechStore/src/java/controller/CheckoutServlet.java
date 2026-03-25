@@ -47,7 +47,7 @@ public class CheckoutServlet extends HttpServlet {
             String address = request.getParameter("address");
             String phone = request.getParameter("phone");
 
-            Order order = new Order(0, user.getId(), new Date(), total, "Completed", address, phone);
+            Order order = new Order(0, user.getId(), new Date(), total, "Completed", user.getUsername(), address, phone);
             OrderDAO dao = new OrderDAO();
             dao.createOrder(order, details);
         }

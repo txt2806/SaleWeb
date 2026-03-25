@@ -21,7 +21,7 @@ public class CategoryDAO extends DBContext {
                 } catch (Exception e) {
                 }
 
-                list.add(new Category(rs.getInt("id"), rs.getString("name"), pId));
+                list.add(new Category(rs.getInt("id"), rs.getString("name"), pId, rs.getTimestamp("created_at")));
             }
         } catch (Exception e) {
             e.printStackTrace();

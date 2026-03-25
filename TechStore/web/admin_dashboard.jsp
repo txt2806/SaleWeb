@@ -36,7 +36,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Quản trị hệ thống - TechStore</title>
+        <title>Quan tri he thong - TechStore</title>
         <link rel="stylesheet" href="css/style.css">
         <style>
             .admin-container {
@@ -54,8 +54,6 @@
                 padding-left: 10px;
                 font-weight: bold;
             }
-
-            /* Form thêm mới */
             .add-form-box {
                 background: #f9fafb;
                 padding: 20px;
@@ -75,8 +73,6 @@
                 border-radius: 4px;
                 outline: none;
             }
-
-            /* Bảng danh sách */
             .admin-table {
                 width: 100%;
                 border-collapse: collapse;
@@ -93,7 +89,6 @@
                 border-bottom: 1px solid #eee;
                 vertical-align: middle;
             }
-
             .btn-apply {
                 background: #16a34a;
                 color: white;
@@ -112,12 +107,10 @@
                 display: inline-block;
                 margin-right: 5px;
             }
-            .edit-link {
-                background: #2563eb;
-            }
-            .delete-link {
-                background: #dc2626;
-            }
+            .edit-link { background: #2563eb; }
+            .delete-link { background: #dc2626; }
+            .stock-low { color: #dc2626; font-weight: bold; }
+            .stock-ok { color: #16a34a; font-weight: bold; }
         </style>
     </head>
     <body>
@@ -126,7 +119,7 @@
         <div class="container">
             <div class="admin-container">
 
-                <h3 class="section-title">➕ Thêm sản phẩm mới</h3>
+                <h3 class="section-title">Thêm sản phẩm mới</h3>
                 <div class="add-form-box">
                     <form action="admin/product" method="post" enctype="multipart/form-data" class="form-grid">
                         <input type="hidden" name="action" value="add">
@@ -137,8 +130,8 @@
                         </div>
 
                         <div style="display:flex; flex-direction:column; gap:5px;">
-                            <label style="font-size:12px;">Giá (VNĐ):</label>
-                            <input type="number" name="price"  required>
+                            <label style="font-size:12px;">Giá (VND):</label>
+                            <input type="number" name="price" required>
                         </div>
 
                         <div style="display:flex; flex-direction:column; gap:5px;">
@@ -162,8 +155,8 @@
                 <hr style="margin-bottom: 30px; border: 0; border-top: 1px solid #eee;">
 
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3 class="section-title" style="margin:0;">📦 Danh sách sản phẩm</h3>
-                    <button type="submit" form="mainTableForm" class="btn-apply">🚀 Apply Nổi bật (Hàng loạt)</button>
+                    <h3 class="section-title" style="margin:0;">Danh sách sản phẩm</h3>
+                    <button type="submit" form="mainTableForm" class="btn-apply">Apply nổi bật</button>
                 </div>
 
                 <form id="mainTableForm" action="admin/product" method="POST">
@@ -174,9 +167,10 @@
                                 <th width="50">ID</th>
                                 <th width="80">Ảnh</th>
                                 <th>Tên sản phẩm</th>
-                                <th><a href="?sort_by=${sortBy == 'price_desc' ? 'price_asc' : 'price_desc'}" style="color: inherit; text-decoration: none;">Giá bán ${sortBy == 'price_asc' ? '↑' : (sortBy == 'price_desc' ? '↓' : '↕')}</a></th>
-                                <th><a href="?sort_by=${sortBy == 'best_selling' ? 'least_selling' : 'best_selling'}" style="color: inherit; text-decoration: none;">Đã bán ${sortBy == 'least_selling' ? '↑' : (sortBy == 'best_selling' ? '↓' : '↕')}</a></th>
-                                <th style="text-align: center;">Nổi bật (Tích chọn)</th>
+                                <th><a href="?sort_by=${sortBy == 'price_desc' ? 'price_asc' : 'price_desc'}" style="color: inherit; text-decoration: none;">Gia ban ${sortBy == 'price_asc' ? '&uarr;' : (sortBy == 'price_desc' ? '&darr;' : '&updownarrow;')}</a></th>
+                                <th><a href="?sort_by=${sortBy == 'best_selling' ? 'least_selling' : 'best_selling'}" style="color: inherit; text-decoration: none;">Da ban ${sortBy == 'least_selling' ? '&uarr;' : (sortBy == 'best_selling' ? '&darr;' : '&updownarrow;')}</a></th>
+                                <th>Tồn kho</th>
+                                <th style="text-align: center;">Nổi bật</th>
                                 <th style="text-align: center;">Thao tác</th>
                             </tr>
                         </thead>
@@ -187,17 +181,27 @@
                                     <td><img src="${p.image}" width="45" height="45" style="object-fit: contain;"></td>
                                     <td><b>${p.name}</b></td>
                                     <td style="color:#d70018; font-weight:bold;">
-                                        <fmt:formatNumber value="${p.price}" pattern="#,###"/>đ
+                                        <fmt:formatNumber value="${p.price}" pattern="#,###"/>d
                                     </td>
                                     <td style="font-weight: 500;">
                                         ${p.soldQuantity}
+                                    </td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${p.stock <= 3}">
+                                                <span class="stock-low">${p.stock} (Sắp hết)</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span class="stock-ok">${p.stock}</span>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </td>
                                     <td style="text-align: center;">
                                         <input type="checkbox" name="featuredIds" value="${p.id}" ${p.featured ? 'checked' : ''} style="transform: scale(1.3); cursor: pointer;">
                                     </td>
                                     <td style="text-align: center;">
-                                        <a href="admin/product?action=prepare_edit&id=${p.id}" class="action-link edit-link">Sửa</a>
-                                        <a href="admin/product?action=delete&id=${p.id}" class="action-link delete-link" onclick="return confirm('Bạn chắc chắn muốn xóa?')">Xóa</a>
+                                        <a href="${pageContext.request.contextPath}/admin/product?action=prepare_edit&id=${p.id}" class="action-link edit-link">Sửa</a>
+                                        <a href="${pageContext.request.contextPath}/admin/product?action=delete&id=${p.id}" class="action-link delete-link" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</a>
                                     </td>
                                 </tr>
                             </c:forEach>
