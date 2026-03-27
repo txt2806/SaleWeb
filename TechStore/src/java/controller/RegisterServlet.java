@@ -18,10 +18,10 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // 1. Lấy dữ liệu từ người dùng
-        String user = request.getParameter("username");
-        String pass = request.getParameter("password");
-        String email = request.getParameter("email");
-        String phone = request.getParameter("phone");
+        String user = request.getParameter("username") != null ? request.getParameter("username").trim() : null;
+        String pass = request.getParameter("password") != null ? request.getParameter("password").trim() : null;
+        String email = request.getParameter("email") != null ? request.getParameter("email").trim() : null;
+        String phone = request.getParameter("phone") != null ? request.getParameter("phone").trim() : null;
         String isVerifiedParam = request.getParameter("isVerified");
         boolean isVerified = "1".equals(isVerifiedParam);
 

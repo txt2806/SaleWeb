@@ -35,7 +35,7 @@
                     </div>
                 </c:if>
 
-                <form action="profile" method="post" class="auth-form" id="profileForm">
+                <form action="profile" method="post" class="auth-form" id="profileForm" enctype="multipart/form-data">
                     <input type="hidden" name="isEmailVerified" id="isEmailVerified" value="1">
                     <input type="hidden" name="isPhoneVerified" id="isPhoneVerified" value="1">
 
@@ -54,8 +54,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Ảnh đại diện (Image URL):</label>
-                        <input type="text" name="avatar" id="avatarUrl" value="${sessionScope.user.avatar}" placeholder="Nhập link ảnh (VD: https://...)">
+                        <label>Ảnh đại diện:</label>
+                        <input type="file" name="avatarFile" id="avatarFile" accept="image/*" style="padding:8px;">
+                        <p style="font-size:12px; color:#888; margin-top:4px;">Chọn ảnh từ máy tính (JPG, PNG, ...)</p>
                     </div>
 
                     <div class="form-group">
@@ -111,10 +112,14 @@
                 firebase.initializeApp(firebaseConfig);
             }
 
-            // Real-time avatar update
-            document.getElementById('avatarUrl').addEventListener('input', function() {
-                if(this.value.trim() !== '') {
-                    document.getElementById('previewAvatar').src = this.value;
+            // Live preview avatar khi chọn file
+            document.getElementById('avatarFile').addEventListener('change', function(e) {
+                if(this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(ev) {
+                        document.getElementById('previewAvatar').src = ev.target.result;
+                    };
+                    reader.readAsDataURL(this.files[0]);
                 }
             });
 

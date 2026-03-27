@@ -8,7 +8,6 @@ public class User {
     private String email;
     private int role;
     private int isVerified;
-    private String token;
     private String avatar;
     private String phone;
     private java.util.Date createdAt;
@@ -16,7 +15,7 @@ public class User {
     public User() {
     }
 
-    public User(int id, String username, String password, String email, String phone, int role, int isVerified, String token, String avatar, java.util.Date createdAt) {
+    public User(int id, String username, String password, String email, String phone, int role, int isVerified, String avatar, java.util.Date createdAt) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -24,7 +23,6 @@ public class User {
         this.phone = phone;
         this.role = role;
         this.isVerified = isVerified;
-        this.token = token;
         this.avatar = avatar;
         this.createdAt = createdAt;
     }
@@ -77,13 +75,6 @@ public class User {
         this.isVerified = isVerified;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
 
     public String getAvatar() {
         return avatar;

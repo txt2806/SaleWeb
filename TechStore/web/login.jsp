@@ -210,6 +210,25 @@
                                     });
                             });
                         }
+
+                        // Tự động kiểm tra nếu user đã đăng nhập Firebase (vừa đăng ký xong)
+                        firebase.auth().onAuthStateChanged(function(user) {
+                            if (user && user.email === email) {
+                                user.reload().then(function() {
+                                    if (user.emailVerified) {
+                                        statusEl.style.display = "block";
+                                        statusEl.style.color = "#075985";
+                                        statusEl.innerText = "Đang xác thực trạng thái...";
+                                        fetch('${pageContext.request.contextPath}/login?action=verify_email&email=' + encodeURIComponent(email))
+                                            .then(function() {
+                                                statusEl.style.color = "#155724";
+                                                statusEl.innerText = "✅ Đã nhận diện xác minh email! Đang đăng nhập...";
+                                                setTimeout(() => { document.querySelector('form.auth-form').submit(); }, 1500);
+                                            });
+                                    }
+                                });
+                            }
+                        });
                     })();
                 </script>
             </div>

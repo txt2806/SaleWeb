@@ -91,15 +91,15 @@ public class AdminProductServlet extends HttpServlet {
         String fileName = filePart.getSubmittedFileName();
 
         if (fileName != null && !fileName.isEmpty()) {
-            String uploadPath = getServletContext().getRealPath("") + File.separator + "images";
+            String uploadPath = "d:" + File.separator + "SE" + File.separator + "SPRING2026" + File.separator + "PRJ301" + File.separator + "SaleWeb" + File.separator + "SaleWeb" + File.separator + "TechStore" + File.separator + "web" + File.separator + "images" + File.separator + "products";
             File uploadDir = new File(uploadPath);
             if (!uploadDir.exists()) {
-                uploadDir.mkdir();
+                uploadDir.mkdirs();
             }
 
             fileName = System.currentTimeMillis() + "_" + fileName;
             filePart.write(uploadPath + File.separator + fileName);
-            imagePath = "images/" + fileName;
+            imagePath = "images/products/" + fileName;
         }
 
         if ("add".equals(action)) {

@@ -38,8 +38,8 @@ public class LoginServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String user = request.getParameter("username");
-        String pass = request.getParameter("password");
+        String user = request.getParameter("username") != null ? request.getParameter("username").trim() : null;
+        String pass = request.getParameter("password") != null ? request.getParameter("password").trim() : null;
 
         UserDAO dao = new UserDAO();
         User u = dao.login(user, pass);

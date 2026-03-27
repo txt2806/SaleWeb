@@ -125,8 +125,8 @@
                             document.getElementById("registerForm").reportValidity();
                             return;
                         }
-                        const email = document.getElementById("regEmail").value;
-                        const pass = document.getElementById("regPass").value;
+                        const email = document.getElementById("regEmail").value.trim();
+                        const pass = document.getElementById("regPass").value.trim();
                         
                         document.getElementById("btnSubmitEmail").innerText = "Đang xử lý...";
                         document.getElementById("btnSubmitEmail").disabled = true;

@@ -2,12 +2,19 @@ package controller;
 
 import dao.UserDAO;
 import model.User;
+import java.io.File;
 import java.io.IOException;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.annotation.MultipartConfig;
 
 @WebServlet("/profile")
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024 * 2,
+        maxFileSize = 1024 * 1024 * 10,
+        maxRequestSize = 1024 * 1024 * 50
+)
 public class ProfileServlet extends HttpServlet {
 
     @Override
@@ -38,10 +45,11 @@ public class ProfileServlet extends HttpServlet {
             return;
         }
 
+        request.setCharacterEncoding("UTF-8");
+
         String username = request.getParameter("username");
         String email = request.getParameter("email");
         String phone = request.getParameter("phone");
-        String avatar = request.getParameter("avatar");
         String isEmailVerified = request.getParameter("isEmailVerified");
         String isPhoneVerified = request.getParameter("isPhoneVerified");
 
@@ -60,6 +68,26 @@ public class ProfileServlet extends HttpServlet {
         if (dao.isPhoneExists(phone, user.getId())) {
             response.sendRedirect("profile.jsp?error=phone_exists");
             return;
+        }
+
+        // Xử lý upload avatar
+        String avatar = user.getAvatar(); // Giữ avatar cũ nếu không upload mới
+        Part filePart = request.getPart("avatarFile");
+        if (filePart != null) {
+            String fileName = filePart.getSubmittedFileName();
+            if (fileName != null && !fileName.trim().isEmpty()) {
+                // Lưu vào thư mục web/images/profile/ trong source
+                String uploadPath = "d:" + File.separator + "SE" + File.separator + "SPRING2026" + File.separator + "PRJ301" + File.separator + "SaleWeb" + File.separator + "SaleWeb" + File.separator + "TechStore" + File.separator + "web" + File.separator + "images" + File.separator + "profile";
+                File uploadDir = new File(uploadPath);
+                if (!uploadDir.exists()) {
+                    uploadDir.mkdirs();
+                }
+
+                // Tạo tên file unique
+                fileName = System.currentTimeMillis() + "_" + fileName;
+                filePart.write(uploadPath + File.separator + fileName);
+                avatar = "images/profile/" + fileName;
+            }
         }
 
         String sql = "UPDATE Users SET username=?, email=?, phone=?, avatar=?, is_verified=? WHERE id=?";

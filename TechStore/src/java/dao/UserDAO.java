@@ -15,7 +15,6 @@ public class UserDAO extends DBContext {
         u.setEmail(rs.getString("email"));
         u.setRole(rs.getInt("role"));
         u.setIsVerified(rs.getInt("is_verified"));
-        u.setToken(rs.getString("token"));
         u.setPhone(rs.getString("phone"));
         u.setAvatar(rs.getString("avatar"));
         return u;
@@ -25,7 +24,7 @@ public class UserDAO extends DBContext {
         String sql = "SELECT * FROM Users WHERE username = ? AND password = ?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
-            st.setString(1, user);
+            st.setString(1, user.trim());
             st.setString(2, pass);
             ResultSet rs = st.executeQuery();
             if (rs.next()) return mapUser(rs);
@@ -43,10 +42,10 @@ public class UserDAO extends DBContext {
         String sql = "INSERT INTO Users (username, password, email, phone, role, is_verified, avatar) VALUES (?, ?, ?, ?, 0, 1, ?)";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
-            st.setString(1, user);
+            st.setString(1, user.trim());
             st.setString(2, pass);
-            st.setString(3, email);
-            st.setString(4, phone);
+            st.setString(3, email != null ? email.trim() : null);
+            st.setString(4, phone != null ? phone.trim() : null);
             st.setString(5, avatar);
             st.executeUpdate();
             return true;
@@ -60,10 +59,10 @@ public class UserDAO extends DBContext {
         String sql = "INSERT INTO Users (username, password, email, phone, role, is_verified) VALUES (?, ?, ?, ?, 0, 0)";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
-            st.setString(1, user);
+            st.setString(1, user.trim());
             st.setString(2, pass);
-            st.setString(3, email);
-            st.setString(4, phone);
+            st.setString(3, email != null ? email.trim() : null);
+            st.setString(4, phone != null ? phone.trim() : null);
             st.executeUpdate();
             return true;
         } catch (Exception e) {
@@ -76,7 +75,7 @@ public class UserDAO extends DBContext {
         String sql = "SELECT * FROM Users WHERE email = ?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
-            st.setString(1, email);
+            st.setString(1, email.trim());
             ResultSet rs = st.executeQuery();
             if (rs.next()) return mapUser(rs);
         } catch (Exception e) {
@@ -86,10 +85,10 @@ public class UserDAO extends DBContext {
     }
 
     public void verifyUser(String email) {
-        String sql = "UPDATE Users SET is_verified = 1, token = NULL WHERE email = ?";
+        String sql = "UPDATE Users SET is_verified = 1 WHERE email = ?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
-            st.setString(1, email);
+            st.setString(1, email.trim());
             st.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -100,7 +99,7 @@ public class UserDAO extends DBContext {
         String sql = "SELECT email FROM Users WHERE username = ?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
-            st.setString(1, username);
+            st.setString(1, username.trim());
             ResultSet rs = st.executeQuery();
             if (rs.next()) return rs.getString("email");
         } catch (Exception e) {
@@ -179,7 +178,7 @@ public class UserDAO extends DBContext {
         String sql = "SELECT COUNT(*) FROM Users WHERE email = ? AND id != ?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
-            st.setString(1, email);
+            st.setString(1, email.trim());
             st.setInt(2, excludeUserId);
             ResultSet rs = st.executeQuery();
             if (rs.next()) return rs.getInt(1) > 0;
@@ -198,7 +197,7 @@ public class UserDAO extends DBContext {
         String sql = "SELECT COUNT(*) FROM Users WHERE phone = ? AND id != ?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
-            st.setString(1, phone);
+            st.setString(1, phone.trim());
             st.setInt(2, excludeUserId);
             ResultSet rs = st.executeQuery();
             if (rs.next()) return rs.getInt(1) > 0;
@@ -213,7 +212,7 @@ public class UserDAO extends DBContext {
         String sql = "SELECT COUNT(*) FROM Users WHERE username = ?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
-            st.setString(1, username);
+            st.setString(1, username.trim());
             ResultSet rs = st.executeQuery();
             if (rs.next()) return rs.getInt(1) > 0;
         } catch (Exception e) {
