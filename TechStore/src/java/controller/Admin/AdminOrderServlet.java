@@ -32,7 +32,9 @@ public class AdminOrderServlet extends HttpServlet {
 
         if ("view_detail".equals(action)) {
             int orderId = Integer.parseInt(request.getParameter("id"));
+            Order order = dao.getOrderById(orderId);
             List<OrderDetail> details = dao.getOrderDetails(orderId);
+            request.setAttribute("order", order);
             request.setAttribute("details", details);
             request.setAttribute("orderId", orderId);
             request.getRequestDispatcher("/admin_order_detail.jsp").forward(request, response);

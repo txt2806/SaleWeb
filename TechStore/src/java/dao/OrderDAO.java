@@ -102,6 +102,30 @@ public class OrderDAO extends DBContext {
         return list;
     }
 
+    public Order getOrderById(int orderId) {
+        try {
+            String sql = "SELECT * FROM Orders WHERE id = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, orderId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new Order(
+                    rs.getInt("id"),
+                    rs.getInt("user_id"),
+                    rs.getTimestamp("order_date"),
+                    rs.getDouble("total_amount"),
+                    rs.getString("status"),
+                    rs.getString("shipping_name"),
+                    rs.getString("shipping_address"),
+                    rs.getString("shipping_phone")
+                );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void updateOrderStatus(int orderId, String newStatus) {
         try {
             // If changing to Completed, update sold_quantity for each product

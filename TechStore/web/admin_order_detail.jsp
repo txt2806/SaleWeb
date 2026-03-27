@@ -64,6 +64,26 @@
             <div class="admin-container">
                 <h3 class="section-title">🔍 Chi tiết Đơn hàng #${orderId}</h3>
 
+                <c:if test="${order != null}">
+                    <div style="background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; padding:16px 20px; margin-bottom:20px;">
+                        <h4 style="margin:0 0 12px 0; color:#374151; font-size:15px;">📦 Thông tin giao hàng</h4>
+                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
+                            <div>
+                                <span style="color:#6b7280; font-size:13px;">Người nhận</span><br>
+                                <strong style="color:#111827;">${order.shippingName}</strong>
+                            </div>
+                            <div>
+                                <span style="color:#6b7280; font-size:13px;">Số điện thoại</span><br>
+                                <strong style="color:#111827;">📞 ${order.shippingPhone}</strong>
+                            </div>
+                            <div>
+                                <span style="color:#6b7280; font-size:13px;">Địa chỉ giao hàng</span><br>
+                                <strong style="color:#111827;">📍 ${order.shippingAddress}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </c:if>
+
                 <table class="admin-table">
                     <thead>
                         <tr>
