@@ -30,4 +30,21 @@ public class AdminUserServlet extends HttpServlet {
         request.setAttribute("users", users);
         request.getRequestDispatcher("/admin_users.jsp").forward(request, response);
     }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (!checkAdmin(request, response)) {
+            return;
+        }
+
+        String action = request.getParameter("action");
+        if ("delete".equals(action)) {
+            int userId = Integer.parseInt(request.getParameter("id"));
+            UserDAO dao = new UserDAO();
+            User target = dao.getUserById(userId);
+            if (target != null && target.getRole() != 1) {
+                dao.deleteUser(userId);
+            }
+        }
+        response.sendRedirect(request.getContextPath() + "/admin/users");
+    }
 }

@@ -61,11 +61,94 @@
     <a href="${pageContext.request.contextPath}/home" class="logo">TechStore</a>
 
     <div class="search-bar-header">
-        <form action="${pageContext.request.contextPath}/products" method="GET">
-            <input type="text" name="keyword" placeholder="Bạn cần tìm gì?">
+        <form action="${pageContext.request.contextPath}/products" method="GET" autocomplete="off">
+            <input type="text" name="keyword" id="searchInput" placeholder="Bạn cần tìm gì?">
             <button type="submit">🔍</button>
         </form>
+        <div class="search-suggestions" id="searchSuggestions"></div>
     </div>
+
+    <script>
+    (function() {
+        var input = document.getElementById('searchInput');
+        var sugBox = document.getElementById('searchSuggestions');
+        var debounceTimer = null;
+        var activeIndex = -1;
+
+        function formatPrice(price) {
+            return Math.round(price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + 'đ';
+        }
+
+        input.addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+            var keyword = this.value.trim();
+            if (keyword.length < 1) {
+                sugBox.innerHTML = '';
+                sugBox.style.display = 'none';
+                activeIndex = -1;
+                return;
+            }
+            debounceTimer = setTimeout(function() {
+                fetch('${pageContext.request.contextPath}/search-suggest?keyword=' + encodeURIComponent(keyword))
+                    .then(function(r) { return r.json(); })
+                    .then(function(data) {
+                        if (data.length === 0) {
+                            sugBox.innerHTML = '<div class="suggest-empty">Không tìm thấy sản phẩm nào</div>';
+                            sugBox.style.display = 'block';
+                            activeIndex = -1;
+                            return;
+                        }
+                        var html = '';
+                        data.forEach(function(p) {
+                            var img = p.image || 'https://cdn-icons-png.flaticon.com/512/1041/1041372.png';
+                            html += '<a href="${pageContext.request.contextPath}/detail?id=' + p.id + '" class="suggest-item">';
+                            html += '<img src="' + img + '" alt="">';
+                            html += '<div class="suggest-info">';
+                            html += '<div class="suggest-name">' + p.name + '</div>';
+                            html += '<div class="suggest-price">' + formatPrice(p.price) + '</div>';
+                            html += '</div></a>';
+                        });
+                        sugBox.innerHTML = html;
+                        sugBox.style.display = 'block';
+                        activeIndex = -1;
+                    })
+                    .catch(function() {
+                        sugBox.style.display = 'none';
+                    });
+            }, 250);
+        });
+
+        input.addEventListener('keydown', function(e) {
+            var items = sugBox.querySelectorAll('.suggest-item');
+            if (!items.length) return;
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                activeIndex = (activeIndex + 1) % items.length;
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                activeIndex = (activeIndex - 1 + items.length) % items.length;
+            } else if (e.key === 'Enter' && activeIndex >= 0) {
+                e.preventDefault();
+                items[activeIndex].click();
+                return;
+            }
+            items.forEach(function(el, i) {
+                el.classList.toggle('active', i === activeIndex);
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-bar-header')) {
+                sugBox.style.display = 'none';
+                activeIndex = -1;
+            }
+        });
+
+        input.addEventListener('focus', function() {
+            if (sugBox.innerHTML.trim()) sugBox.style.display = 'block';
+        });
+    })();
+    </script>
 
     <div class="nav-links">
         <a href="${pageContext.request.contextPath}/home">🏠 Trang chủ</a>

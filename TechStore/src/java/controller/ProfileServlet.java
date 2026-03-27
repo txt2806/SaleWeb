@@ -11,6 +11,26 @@ import jakarta.servlet.annotation.WebServlet;
 public class ProfileServlet extends HttpServlet {
 
     @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
+        if ("verify_password".equals(action)) {
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            User user = (User) request.getSession().getAttribute("user");
+            String password = request.getParameter("password");
+            if (user == null || password == null) {
+                response.getWriter().print("{\"valid\":false}");
+                return;
+            }
+            UserDAO dao = new UserDAO();
+            User check = dao.login(user.getUsername(), password);
+            response.getWriter().print(check != null ? "{\"valid\":true}" : "{\"valid\":false}");
+            return;
+        }
+        response.sendRedirect("profile.jsp");
+    }
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User user = (User) request.getSession().getAttribute("user");
         if (user == null) {
@@ -22,12 +42,26 @@ public class ProfileServlet extends HttpServlet {
         String email = request.getParameter("email");
         String phone = request.getParameter("phone");
         String avatar = request.getParameter("avatar");
-        String isEmailVerified = request.getParameter("isEmailVerified"); // 1 if unchanged or verified
-        String isPhoneVerified = request.getParameter("isPhoneVerified"); // 1 if unchanged or verified
+        String isEmailVerified = request.getParameter("isEmailVerified");
+        String isPhoneVerified = request.getParameter("isPhoneVerified");
+
+        if (email != null && email.trim().isEmpty()) email = null;
+        if (phone != null && phone.trim().isEmpty()) phone = null;
 
         UserDAO dao = new UserDAO();
-        
-        // Update fields safely
+
+        // Kiểm tra trùng email (trừ chính user hiện tại)
+        if (dao.isEmailExists(email, user.getId())) {
+            response.sendRedirect("profile.jsp?error=email_exists");
+            return;
+        }
+
+        // Kiểm tra trùng SĐT (trừ chính user hiện tại)
+        if (dao.isPhoneExists(phone, user.getId())) {
+            response.sendRedirect("profile.jsp?error=phone_exists");
+            return;
+        }
+
         String sql = "UPDATE Users SET username=?, email=?, phone=?, avatar=?, is_verified=? WHERE id=?";
         try {
             java.sql.PreparedStatement st = dao.connection.prepareStatement(sql);
@@ -35,9 +69,7 @@ public class ProfileServlet extends HttpServlet {
             st.setString(2, email);
             st.setString(3, phone);
             st.setString(4, avatar);
-            
-            // If they changed email and didn't verify, we set is_verified to 0. 
-            // Better yet, if either is 0, we can set is_verified = 0.
+
             int verifiedStatus = ("1".equals(isEmailVerified) && "1".equals(isPhoneVerified)) ? 1 : 0;
             st.setInt(5, verifiedStatus);
             st.setInt(6, user.getId());

@@ -123,8 +123,16 @@
                                                 <a href="<%= request.getContextPath() %>/admin/reset_password?id=${usr.id}" 
                                                    class="action-link reset-link" 
                                                    onclick="return confirm('Bạn có chắc muốn Reset mật khẩu của user này về 123456?');">
-                                                   🔑 Reset Mật Khẩu
+                                                   🔑 Reset MK
                                                 </a>
+                                                <form action="<%= request.getContextPath() %>/admin/users" method="post" style="display:inline; margin-left:5px;">
+                                                    <input type="hidden" name="action" value="delete">
+                                                    <input type="hidden" name="id" value="${usr.id}">
+                                                    <button type="submit" class="action-link" style="background:#dc2626; border:none; cursor:pointer;" 
+                                                            onclick="return confirm('Bạn có chắc muốn XÓA user ${usr.username}? Hành động này không thể hoàn tác!');">
+                                                        🗑 Xóa
+                                                    </button>
+                                                </form>
                                             </c:if>
                                         </td>
                                     </tr>

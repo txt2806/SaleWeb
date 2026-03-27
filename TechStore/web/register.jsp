@@ -4,7 +4,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Dang ky - TechStore</title>
+        <title>Đăng ký - TechStore</title>
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
@@ -16,27 +16,27 @@
                 <div class="auth-icon">
                     <img src="https://cdn-icons-png.flaticon.com/512/3596/3596091.png" width="60" alt="Register Icon" style="opacity: 0.8;">
                 </div>
-                <h2 class="auth-title">Dang Ky</h2>
-                <p class="auth-subtitle">Tao tai khoan de nhan nhieu uu dai</p>
+                <h2 class="auth-title">Đăng Ký</h2>
+                <p class="auth-subtitle">Tạo tài khoản để nhận nhiều ưu đãi</p>
 
                 <form action="register" method="post" class="auth-form" id="registerForm">
                     <div style="display:flex; margin-bottom: 15px;">
                         <button type="button" id="tabEmail" style="flex:1; padding:10px; border:1px solid #ccc; background:#fff; cursor:pointer; font-weight:bold; border-bottom:2px solid #e67e22; color:#e67e22;">Qua Email</button>
-                        <button type="button" id="tabPhone" style="flex:1; padding:10px; border:1px solid #ccc; background:#f9f9f9; cursor:pointer; color:#333;">Qua SDT</button>
+                        <button type="button" id="tabPhone" style="flex:1; padding:10px; border:1px solid #ccc; background:#f9f9f9; cursor:pointer; color:#333;">Qua SĐT</button>
                     </div>
 
                     <div class="form-group">
-                        <input type="text" name="username" id="regUser" placeholder="Ten dang nhap" required>
+                        <input type="text" name="username" id="regUser" placeholder="Tên đăng nhập" required>
                     </div>
                     <div class="form-group">
-                        <input type="password" name="password" id="regPass" placeholder="Mat khau" required>
+                        <input type="password" name="password" id="regPass" placeholder="Mật khẩu" required>
                     </div>
                     
                     <div class="form-group" id="groupEmail">
-                        <input type="email" name="email" id="regEmail" placeholder="Dia chi Email" required>
+                        <input type="email" name="email" id="regEmail" placeholder="Địa chỉ Email" required>
                     </div>
                     <div class="form-group" id="groupPhone" style="display:none;">
-                        <input type="text" name="phone" id="regPhone" placeholder="So dien thoai (+84...)">
+                        <input type="text" name="phone" id="regPhone" placeholder="Số điện thoại (+84...)">
                     </div>
 
                     <input type="hidden" name="isVerified" id="isVerifiedFlag" value="0">
@@ -49,17 +49,17 @@
 
                     <div id="recaptcha-container"></div>
                     <div class="form-group" id="otp-group" style="display:none; margin-top:10px;">
-                        <input type="text" id="otp" placeholder="Nhap ma OTP tu SMS">
-                        <button type="button" id="btnVerifyOTP" class="auth-btn" style="background:#4ade80; margin-top:5px;">XAC NHAN OTP</button>
+                        <input type="text" id="otp" placeholder="Nhập mã OTP từ SMS">
+                        <button type="button" id="btnVerifyOTP" class="auth-btn" style="background:#4ade80; margin-top:5px;">XÁC NHẬN OTP</button>
                     </div>
 
-                    <button type="button" id="btnSubmitEmail" class="auth-btn" style="margin-top:10px;">DANG KY BANG EMAIL</button>
-                    <button type="button" id="btnSendOTP" class="auth-btn" style="background:#f59e0b; margin-top:10px; display:none;">GUI OTP TOI SDT</button>
+                    <button type="button" id="btnSubmitEmail" class="auth-btn" style="margin-top:10px;">ĐĂNG KÝ BẰNG EMAIL</button>
+                    <button type="button" id="btnSendOTP" class="auth-btn" style="background:#f59e0b; margin-top:10px; display:none;">GỬI OTP TỚI SĐT</button>
                     <button type="submit" id="btnSubmit" style="display:none;"></button>
                 </form>
 
                 <div style="text-align:center; margin: 15px 0; color: #666; font-size: 14px; position:relative;">
-                    <span style="background:#fff; padding:0 10px; position:relative; z-index:1;">Hoac dang ky bang</span>
+                    <span style="background:#fff; padding:0 10px; position:relative; z-index:1;">Hoặc đăng ký bằng</span>
                     <div style="border-top: 1px solid #ddd; position:absolute; top:50%; width:100%; z-index:0;"></div>
                 </div>
                 
@@ -128,21 +128,43 @@
                         const email = document.getElementById("regEmail").value;
                         const pass = document.getElementById("regPass").value;
                         
-                        document.getElementById("btnSubmitEmail").innerText = "Dang xu ly...";
+                        document.getElementById("btnSubmitEmail").innerText = "Đang xử lý...";
                         document.getElementById("btnSubmitEmail").disabled = true;
 
                         firebase.auth().createUserWithEmailAndPassword(email, pass)
                             .then(function(userCredential) {
                                 userCredential.user.sendEmailVerification().then(function() {
-                                    alert("Dang ky Firebase thanh cong! Mot Email xac minh vua duoc gui toi " + email);
+                                    alert("Đăng ký thành công! Một Email xác minh vừa được gửi tới " + email);
                                     document.getElementById("isVerifiedFlag").value = "0";
                                     document.getElementById("btnSubmit").click();
                                 });
                             })
                             .catch(function(error) {
-                                alert("Loi Firebase: " + error.message);
-                                document.getElementById("btnSubmitEmail").innerText = "DANG KY BANG EMAIL";
-                                document.getElementById("btnSubmitEmail").disabled = false;
+                                if (error.code === 'auth/email-already-in-use') {
+                                    // Email đã tồn tại trên Firebase (có thể user cũ đã bị xóa trên DB)
+                                    // Thử đăng nhập Firebase để gửi lại email xác minh
+                                    firebase.auth().signInWithEmailAndPassword(email, pass)
+                                        .then(function(cred) {
+                                            if (!cred.user.emailVerified) {
+                                                cred.user.sendEmailVerification().then(function() {
+                                                    alert("Email xác minh đã được gửi tới " + email);
+                                                });
+                                            }
+                                            document.getElementById("isVerifiedFlag").value = cred.user.emailVerified ? "1" : "0";
+                                            document.getElementById("btnSubmit").click();
+                                        })
+                                        .catch(function(signInError) {
+                                            // Mật khẩu Firebase cũ khác → xóa Firebase user cũ không được
+                                            // Vẫn cho đăng ký trên DB với isVerified = 0
+                                            alert("Email đã tồn tại trên Firebase với mật khẩu khác. Tài khoản sẽ được tạo nhưng cần xác minh lại.");
+                                            document.getElementById("isVerifiedFlag").value = "0";
+                                            document.getElementById("btnSubmit").click();
+                                        });
+                                } else {
+                                    alert("Lỗi Firebase: " + error.message);
+                                    document.getElementById("btnSubmitEmail").innerText = "ĐĂNG KÝ BẰNG EMAIL";
+                                    document.getElementById("btnSubmitEmail").disabled = false;
+                                }
                             });
                     };
 
@@ -154,30 +176,30 @@
                         }
                         const phone = document.getElementById("regPhone").value;
                         if(!phone.startsWith("+84") && phone.startsWith("0")) {
-                            alert("Vui long nhap so dien thoai dinh dang +84 (VD: +84912345678)");
+                            alert("Vui lòng nhập số điện thoại định dạng +84 (VD: +84912345678)");
                             return;
                         }
-                        document.getElementById("btnSendOTP").innerText = "Dang gui SMS...";
+                        document.getElementById("btnSendOTP").innerText = "Đang gửi SMS...";
                         firebase.auth().signInWithPhoneNumber(phone, window.recaptchaVerifier)
                             .then(function (confirmationResult) {
                                 window.confirmationResult = confirmationResult;
                                 document.getElementById("otp-group").style.display = "block";
                                 document.getElementById("btnSendOTP").style.display = "none";
-                                alert("Da gui ma OTP!");
+                                alert("Đã gửi mã OTP!");
                             }).catch(function (error) {
-                                alert("Loi khi gui SMS: " + error.message);
-                                document.getElementById("btnSendOTP").innerText = "GUI OTP TOI SDT";
+                                alert("Lỗi khi gửi SMS: " + error.message);
+                                document.getElementById("btnSendOTP").innerText = "GỬI OTP TỚI SĐT";
                             });
                     };
 
                     document.getElementById("btnVerifyOTP").onclick = function() {
                         const code = document.getElementById("otp").value;
                         confirmationResult.confirm(code).then(function (result) {
-                            alert("Xac thuc SDT thanh cong!");
+                            alert("Xác thực SĐT thành công!");
                             document.getElementById("isVerifiedFlag").value = "1";
                             document.getElementById("btnSubmit").click();
                         }).catch(function (error) {
-                            alert("Ma OTP khong dung!");
+                            alert("Mã OTP không đúng!");
                         });
                     };
 
@@ -191,12 +213,12 @@
                     document.getElementById("btnGoogleReg").addEventListener("click", function() {
                         var provider = new firebase.auth.GoogleAuthProvider();
                         firebase.auth().signInWithPopup(provider).then(function(result) { submitSocialReg(result.user); })
-                        .catch(function(error) { alert("Dang nhap Google that bai: " + error.message); });
+                        .catch(function(error) { alert("Đăng nhập Google thất bại: " + error.message); });
                     });
                 </script>
 
                 <div class="auth-links">
-                    Da co tai khoan? <a href="login.jsp">Dang nhap ngay</a>
+                    Đã có tài khoản? <a href="login.jsp">Đăng nhập ngay</a>
                 </div>
             </div>
         </div>

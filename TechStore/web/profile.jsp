@@ -24,6 +24,16 @@
                         Cập nhật thông tin thành công!
                     </div>
                 </c:if>
+                <c:if test="${param.error == 'email_exists'}">
+                    <div style="background: #f8d7da; color: #721c24; padding: 10px; text-align: center; border-radius: 5px; margin-bottom: 15px;">
+                        Email đã được sử dụng bởi tài khoản khác!
+                    </div>
+                </c:if>
+                <c:if test="${param.error == 'phone_exists'}">
+                    <div style="background: #f8d7da; color: #721c24; padding: 10px; text-align: center; border-radius: 5px; margin-bottom: 15px;">
+                        Số điện thoại đã được sử dụng bởi tài khoản khác!
+                    </div>
+                </c:if>
 
                 <form action="profile" method="post" class="auth-form" id="profileForm">
                     <input type="hidden" name="isEmailVerified" id="isEmailVerified" value="1">
@@ -54,8 +64,15 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Địa chỉ Email (Đổi email sẽ cần xác minh lại):</label>
+                        <label>Địa chỉ Email:</label>
                         <input type="email" name="email" id="profileEmail" value="${sessionScope.user.email}" required>
+                    </div>
+
+                    <div class="form-group" id="email-verify-group" style="display:none; background:#fff3cd; padding:12px; border-radius:8px; border:1px dashed #ffc107;">
+                        <p style="font-size:13px; color:#856404; margin-bottom:8px;">⚠️ Bạn đang đổi email. Nhập mật khẩu hiện tại để xác nhận.</p>
+                        <input type="password" id="confirmPassword" placeholder="Nhập mật khẩu hiện tại" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; margin-bottom:8px;">
+                        <button type="button" id="btnConfirmEmail" class="auth-btn" style="background:#f59e0b;">XÁC NHẬN ĐỔI EMAIL</button>
+                        <p id="emailVerifyStatus" style="font-size:13px; color:#155724; display:none; margin-top:8px;">✅ Đã xác nhận! Email mới sẽ được lưu.</p>
                     </div>
 
                     <div class="form-group">
@@ -104,30 +121,82 @@
             // Logic required to re-verify phone / email
             const originalEmail = document.getElementById("profileEmail").defaultValue;
             const originalPhone = document.getElementById("profilePhone").defaultValue;
+            let emailVerified = true;
+            let phoneVerified = true;
+
+            function updateSubmitButton() {
+                if (!emailVerified || !phoneVerified) {
+                    document.getElementById("btnSubmitProfile").disabled = true;
+                    document.getElementById("btnSubmitProfile").style.opacity = "0.5";
+                    var msg = [];
+                    if (!emailVerified) msg.push("Email");
+                    if (!phoneVerified) msg.push("SĐT");
+                    document.getElementById("btnSubmitProfile").innerText = "VUI LÒNG XÁC MINH " + msg.join(" & ") + " ĐỂ LƯU";
+                } else {
+                    document.getElementById("btnSubmitProfile").disabled = false;
+                    document.getElementById("btnSubmitProfile").style.opacity = "1";
+                    document.getElementById("btnSubmitProfile").innerText = "LƯU THAY ĐỔI";
+                }
+            }
 
             document.getElementById("profileEmail").addEventListener('input', function() {
-                if(this.value !== originalEmail) {
+                if(this.value !== originalEmail && this.value.trim() !== "") {
                     document.getElementById("isEmailVerified").value = "0";
+                    document.getElementById("email-verify-group").style.display = "block";
+                    document.getElementById("emailVerifyStatus").style.display = "none";
+                    document.getElementById("btnConfirmEmail").style.display = "block";
+                    document.getElementById("confirmPassword").value = "";
+                    emailVerified = false;
                 } else {
                     document.getElementById("isEmailVerified").value = "1";
+                    document.getElementById("email-verify-group").style.display = "none";
+                    emailVerified = true;
                 }
+                updateSubmitButton();
             });
+
+            // Xác nhận đổi email bằng mật khẩu
+            document.getElementById("btnConfirmEmail").onclick = function() {
+                var pwd = document.getElementById("confirmPassword").value;
+                if (!pwd) { alert("Vui lòng nhập mật khẩu!"); return; }
+                this.innerText = "Đang kiểm tra...";
+                this.disabled = true;
+
+                fetch('${pageContext.request.contextPath}/profile?action=verify_password&password=' + encodeURIComponent(pwd))
+                    .then(function(r) { return r.json(); })
+                    .then(function(data) {
+                        if (data.valid) {
+                            emailVerified = true;
+                            document.getElementById("isEmailVerified").value = "1";
+                            document.getElementById("emailVerifyStatus").style.display = "block";
+                            document.getElementById("btnConfirmEmail").style.display = "none";
+                            document.getElementById("confirmPassword").style.display = "none";
+                            updateSubmitButton();
+                        } else {
+                            alert("Mật khẩu không đúng!");
+                            document.getElementById("btnConfirmEmail").innerText = "XÁC NHẬN ĐỔI EMAIL";
+                            document.getElementById("btnConfirmEmail").disabled = false;
+                        }
+                    })
+                    .catch(function() {
+                        alert("Có lỗi xảy ra!");
+                        document.getElementById("btnConfirmEmail").innerText = "XÁC NHẬN ĐỔI EMAIL";
+                        document.getElementById("btnConfirmEmail").disabled = false;
+                    });
+            };
 
             document.getElementById("profilePhone").addEventListener('input', function() {
                 if(this.value !== originalPhone && this.value.trim() !== "") {
                     document.getElementById("isPhoneVerified").value = "0";
                     document.getElementById("btnSendOTP").style.display = "block";
-                    document.getElementById("btnSubmitProfile").disabled = true;
-                    document.getElementById("btnSubmitProfile").style.opacity = "0.5";
-                    document.getElementById("btnSubmitProfile").innerText = "VUI LÒNG XÁC MINH SDT ĐỂ LƯU";
+                    phoneVerified = false;
                 } else {
                     document.getElementById("isPhoneVerified").value = "1";
                     document.getElementById("btnSendOTP").style.display = "none";
                     document.getElementById("otp-group").style.display = "none";
-                    document.getElementById("btnSubmitProfile").disabled = false;
-                    document.getElementById("btnSubmitProfile").style.opacity = "1";
-                    document.getElementById("btnSubmitProfile").innerText = "LƯU THAY ĐỔI";
+                    phoneVerified = true;
                 }
+                updateSubmitButton();
             });
 
             document.addEventListener("DOMContentLoaded", function () {
@@ -159,12 +228,10 @@
                 const code = document.getElementById("otp").value;
                 confirmationResult.confirm(code).then(function (result) {
                     alert("Xác thực SĐT mới thành công!");
+                    phoneVerified = true;
                     document.getElementById("isPhoneVerified").value = "1";
                     document.getElementById("otp-group").style.display = "none";
-                    
-                    document.getElementById("btnSubmitProfile").disabled = false;
-                    document.getElementById("btnSubmitProfile").style.opacity = "1";
-                    document.getElementById("btnSubmitProfile").innerText = "LƯU THAY ĐỔI";
+                    updateSubmitButton();
                 }).catch(function (error) {
                     alert("Mã OTP không đúng!");
                 });

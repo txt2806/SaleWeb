@@ -80,9 +80,10 @@
                             <option value="best_selling" ${sortBy == 'best_selling' ? 'selected' : ''}>Bán chạy nhất</option>
                         </select>
 
-                        <div class="search-bar-inner">
-                            <input type="text" form="filterForm" name="keyword" value="${keyword}" placeholder="Tìm sản phẩm...">
+                        <div class="search-bar-inner" style="position:relative;">
+                            <input type="text" form="filterForm" name="keyword" id="productSearchInput" value="${keyword}" placeholder="Tìm sản phẩm..." autocomplete="off">
                             <button type="submit" form="filterForm">🔍</button>
+                            <div id="productSuggestBox" style="display:none; position:absolute; top:100%; left:0; right:0; background:#fff; border:1px solid #ddd; border-top:none; border-radius:0 0 8px 8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:999; max-height:350px; overflow-y:auto;"></div>
                         </div>
                     </div>
                 </div>
@@ -135,5 +136,49 @@
         </div>
 
         <%@include file="footer.jsp"%>
+
+        <script>
+        (function() {
+            var input = document.getElementById('productSearchInput');
+            var box = document.getElementById('productSuggestBox');
+            var timer = null;
+
+            input.addEventListener('input', function() {
+                clearTimeout(timer);
+                var kw = this.value.trim();
+                if (kw.length < 1) { box.style.display = 'none'; return; }
+                timer = setTimeout(function() {
+                    fetch('${pageContext.request.contextPath}/search-suggest?keyword=' + encodeURIComponent(kw))
+                        .then(function(r) { return r.json(); })
+                        .then(function(data) {
+                            if (!data || data.length === 0) { box.style.display = 'none'; return; }
+                            var html = '';
+                            for (var i = 0; i < data.length; i++) {
+                                var p = data[i];
+                                var img = p.image || 'https://cdn-icons-png.flaticon.com/512/1041/1041372.png';
+                                var price = new Intl.NumberFormat('vi-VN').format(p.price) + 'đ';
+                                html += '<a href="detail?id=' + p.id + '" style="display:flex; align-items:center; padding:10px 12px; text-decoration:none; color:#333; border-bottom:1px solid #f0f0f0; transition:background 0.15s;"'
+                                     + ' onmouseenter="this.style.background=\'#fff5f5\'" onmouseleave="this.style.background=\'#fff\'">'
+                                     + '<img src="' + img + '" style="width:40px; height:40px; object-fit:contain; border-radius:4px; margin-right:10px; flex-shrink:0;">'
+                                     + '<div style="flex:1; min-width:0;">'
+                                     + '<div style="font-size:13px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + p.name + '</div>'
+                                     + '<div style="font-size:12px; color:#d70018; font-weight:bold;">' + price + '</div>'
+                                     + '</div></a>';
+                            }
+                            box.innerHTML = html;
+                            box.style.display = 'block';
+                        });
+                }, 250);
+            });
+
+            input.addEventListener('focus', function() {
+                if (box.innerHTML && this.value.trim().length > 0) box.style.display = 'block';
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!input.contains(e.target) && !box.contains(e.target)) box.style.display = 'none';
+            });
+        })();
+        </script>
     </body>
 </html>

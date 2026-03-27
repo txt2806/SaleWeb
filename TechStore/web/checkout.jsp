@@ -40,7 +40,7 @@
                            style="width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 6px; outline: none;">
 
                     <label style="font-weight: bold; margin-bottom: 8px; display: block; color: #333;">Số điện thoại nhận hàng (*)</label>
-                    <input type="text" name="phone" id="checkoutPhone" value="${sessionScope.user.phone}" placeholder="Ví dụ: +84912345678" required 
+                    <input type="text" name="phone" id="checkoutPhone" value="${sessionScope.user.phone}" placeholder="Ví dụ: 0912345678 hoặc +84912345678" required 
                            style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px; outline: none;">
 
                     <div id="recaptcha-container"></div>
@@ -102,10 +102,13 @@
             });
 
             document.getElementById("btnSendOTP").onclick = function() {
-                const phone = document.getElementById("checkoutPhone").value.trim();
-                if(!phone.startsWith("+84") && phone.startsWith("0")) {
-                    alert("Vui lòng nhập số điện thoại bắt đầu bằng +84 (VD: +84912345678)");
-                    return;
+                let phone = document.getElementById("checkoutPhone").value.trim();
+                // Tự động chuyển 0xxx → +84xxx
+                if (phone.startsWith("0")) {
+                    phone = "+84" + phone.substring(1);
+                }
+                if (!phone.startsWith("+")) {
+                    phone = "+84" + phone;
                 }
                 this.innerText = "Đang gửi SMS...";
                 firebase.auth().signInWithPhoneNumber(phone, window.recaptchaVerifier)

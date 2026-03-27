@@ -29,6 +29,24 @@ public class RegisterServlet extends HttpServlet {
         if (phone != null && phone.trim().isEmpty()) phone = null;
 
         UserDAO dao = new UserDAO();
+
+        // 2. Kiểm tra trùng username, email, phone
+        if (dao.isUsernameExists(user)) {
+            request.setAttribute("error", "Tên đăng nhập đã tồn tại. Vui lòng chọn tên khác!");
+            request.getRequestDispatcher("register.jsp").forward(request, response);
+            return;
+        }
+        if (dao.isEmailExists(email)) {
+            request.setAttribute("error", "Email đã được sử dụng bởi tài khoản khác!");
+            request.getRequestDispatcher("register.jsp").forward(request, response);
+            return;
+        }
+        if (dao.isPhoneExists(phone)) {
+            request.setAttribute("error", "Số điện thoại đã được sử dụng bởi tài khoản khác!");
+            request.getRequestDispatcher("register.jsp").forward(request, response);
+            return;
+        }
+
         boolean isSuccess;
         if (isVerified) {
             isSuccess = dao.registerVerifiedUser(user, pass, email, phone);
@@ -37,7 +55,7 @@ public class RegisterServlet extends HttpServlet {
         }
         
         if (!isSuccess) {
-            request.setAttribute("error", "Tên đăng nhập, Email hoặc SĐT đã tồn tại. Vui lòng chọn thông tin khác!");
+            request.setAttribute("error", "Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại!");
             request.getRequestDispatcher("register.jsp").forward(request, response);
             return;
         }

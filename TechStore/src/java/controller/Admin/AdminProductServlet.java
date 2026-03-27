@@ -60,6 +60,26 @@ public class AdminProductServlet extends HttpServlet {
         String action = request.getParameter("action");
         ProductDAO dao = new ProductDAO();
 
+        // --- Batch actions (no file upload) ---
+        if ("update_featured_batch".equals(action)) {
+            String[] featuredIds = request.getParameterValues("featuredIds");
+            dao.updateFeaturedBatch(featuredIds);
+            response.sendRedirect(request.getContextPath() + "/admin_dashboard.jsp");
+            return;
+        }
+        if ("update_stock_batch".equals(action)) {
+            String[] ids = request.getParameterValues("stockProductId");
+            String[] stocks = request.getParameterValues("stockValue");
+            if (ids != null && stocks != null) {
+                for (int i = 0; i < ids.length; i++) {
+                    dao.updateStock(Integer.parseInt(ids[i]), Integer.parseInt(stocks[i]));
+                }
+            }
+            response.sendRedirect(request.getContextPath() + "/admin_dashboard.jsp");
+            return;
+        }
+
+        // --- Add/Edit product (with file upload) ---
         String name = request.getParameter("name");
         double price = Double.parseDouble(request.getParameter("price"));
         String desc = request.getParameter("description");

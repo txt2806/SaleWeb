@@ -92,6 +92,24 @@ public class ProductDAO extends DBContext {
         return list;
     }
 
+    public List<Product> searchSuggestions(String keyword, int limit) {
+        List<Product> list = new ArrayList<>();
+        try {
+            PreparedStatement st = connection.prepareStatement(
+                "SELECT TOP (?) * FROM Products WHERE name LIKE ? AND is_deleted = 0 ORDER BY sold_quantity DESC"
+            );
+            st.setInt(1, limit);
+            st.setString(2, "%" + keyword + "%");
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                list.add(mapResultSetToProduct(rs));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public Product getProductById(int id) {
         try {
             PreparedStatement st = connection.prepareStatement("SELECT * FROM Products WHERE id=?");
@@ -157,6 +175,34 @@ public class ProductDAO extends DBContext {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, id);
             st.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateStock(int id, int stock) {
+        try {
+            PreparedStatement st = connection.prepareStatement("UPDATE Products SET stock = ? WHERE id = ?");
+            st.setInt(1, stock);
+            st.setInt(2, id);
+            st.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateFeaturedBatch(String[] featuredIds) {
+        try {
+            // Bỏ featured tất cả
+            connection.createStatement().executeUpdate("UPDATE Products SET is_featured = 0");
+            // Đánh dấu featured cho các ID được chọn
+            if (featuredIds != null) {
+                for (String sid : featuredIds) {
+                    PreparedStatement st = connection.prepareStatement("UPDATE Products SET is_featured = 1 WHERE id = ?");
+                    st.setInt(1, Integer.parseInt(sid));
+                    st.executeUpdate();
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

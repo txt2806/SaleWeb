@@ -156,8 +156,15 @@
 
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                     <h3 class="section-title" style="margin:0;">Danh sách sản phẩm</h3>
-                    <button type="submit" form="mainTableForm" class="btn-apply">Apply nổi bật</button>
+                    <div style="display:flex; gap:8px;">
+                        <button type="submit" form="stockForm" class="btn-apply" style="background:#2563eb;">📦 Cập nhật tồn kho</button>
+                        <button type="submit" form="mainTableForm" class="btn-apply">⭐ Apply nổi bật</button>
+                    </div>
                 </div>
+
+                <form id="stockForm" action="admin/product" method="POST" style="display:none;">
+                    <input type="hidden" name="action" value="update_stock_batch">
+                </form>
 
                 <form id="mainTableForm" action="admin/product" method="POST">
                     <input type="hidden" name="action" value="update_featured_batch">
@@ -167,8 +174,8 @@
                                 <th width="50">ID</th>
                                 <th width="80">Ảnh</th>
                                 <th>Tên sản phẩm</th>
-                                <th><a href="?sort_by=${sortBy == 'price_desc' ? 'price_asc' : 'price_desc'}" style="color: inherit; text-decoration: none;">Gia ban ${sortBy == 'price_asc' ? '&uarr;' : (sortBy == 'price_desc' ? '&darr;' : '&updownarrow;')}</a></th>
-                                <th><a href="?sort_by=${sortBy == 'best_selling' ? 'least_selling' : 'best_selling'}" style="color: inherit; text-decoration: none;">Da ban ${sortBy == 'least_selling' ? '&uarr;' : (sortBy == 'best_selling' ? '&darr;' : '&updownarrow;')}</a></th>
+                                <th><a href="?sort_by=${sortBy == 'price_desc' ? 'price_asc' : 'price_desc'}" style="color: inherit; text-decoration: none;">Giá bán ${sortBy == 'price_asc' ? '&uarr;' : (sortBy == 'price_desc' ? '&darr;' : '&updownarrow;')}</a></th>
+                                <th><a href="?sort_by=${sortBy == 'best_selling' ? 'least_selling' : 'best_selling'}" style="color: inherit; text-decoration: none;">Đã bán ${sortBy == 'least_selling' ? '&uarr;' : (sortBy == 'best_selling' ? '&darr;' : '&updownarrow;')}</a></th>
                                 <th>Tồn kho</th>
                                 <th style="text-align: center;">Nổi bật</th>
                                 <th style="text-align: center;">Thao tác</th>
@@ -181,20 +188,15 @@
                                     <td><img src="${p.image}" width="45" height="45" style="object-fit: contain;"></td>
                                     <td><b>${p.name}</b></td>
                                     <td style="color:#d70018; font-weight:bold;">
-                                        <fmt:formatNumber value="${p.price}" pattern="#,###"/>d
+                                        <fmt:formatNumber value="${p.price}" pattern="#,###"/>đ
                                     </td>
                                     <td style="font-weight: 500;">
                                         ${p.soldQuantity}
                                     </td>
                                     <td>
-                                        <c:choose>
-                                            <c:when test="${p.stock <= 3}">
-                                                <span class="stock-low">${p.stock} (Sắp hết)</span>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <span class="stock-ok">${p.stock}</span>
-                                            </c:otherwise>
-                                        </c:choose>
+                                        <input type="hidden" name="stockProductId" value="${p.id}" form="stockForm">
+                                        <input type="number" name="stockValue" value="${p.stock}" min="0" form="stockForm"
+                                               style="width:65px; padding:4px 6px; border:1px solid ${p.stock <= 3 ? '#dc2626' : '#ccc'}; border-radius:4px; font-weight:bold; color:${p.stock <= 3 ? '#dc2626' : '#16a34a'};">
                                     </td>
                                     <td style="text-align: center;">
                                         <input type="checkbox" name="featuredIds" value="${p.id}" ${p.featured ? 'checked' : ''} style="transform: scale(1.3); cursor: pointer;">
